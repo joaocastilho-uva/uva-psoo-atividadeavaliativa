@@ -1,0 +1,61 @@
+﻿@page
+
+@model ArteConexao.Pages.Admin.InclusaoStandModel
+
+@{
+    ViewData["Title"] = "Incluir stand";
+}
+
+<body>
+    <!-- Header início -->
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">Inclusão de stand</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Admin</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Inclusão de stand</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Header fim -->
+    <!-- Form início -->
+    <div class="container-xxl py-6">
+        <div class="container">
+            <partial name="_Notificacao"></partial>
+            <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                <h1 class="display-5 mb-3">Incluir stand</h1>
+            </div>
+            <div class="row g-5 justify-content-center">
+                <div class="col-lg-7 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
+                    <form method="post">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <div class="form-floating">
+                                    <input id="iptNome" class="form-control" type="text" asp-for="StandViewModel.Nome" placeholder="Nome" required>
+                                    <label for="iptNome">Nome</label>
+                                    <span class="text-danger" asp-validation-for="StandViewModel.Nome"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-floating">
+                                    <input id="iptLocalizacao" class="form-control" type="text" asp-for="StandViewModel.Localizacao" placeholder="Localização" required>
+                                    <label for="iptLocalizacao">Localização</label>
+                                    <span class="text-danger" asp-validation-for="StandViewModel.Localizacao"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <button id="btnSalvar" class="btn btn-primary rounded-pill py-3 px-5" type="submit">Salvar</button>
+                                <a id="btnCancelar" class="btn btn-danger rounded-pill py-3 px-5" href="/admin/gerenciamentostand" role="button">Cancelar</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Form fim -->
+</body>

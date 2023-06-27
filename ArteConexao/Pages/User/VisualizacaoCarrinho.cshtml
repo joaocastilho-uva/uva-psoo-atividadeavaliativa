@@ -1,0 +1,182 @@
+﻿@page "{usuarioId:Guid}"
+@using ArteConexao.Enums;
+@using ArteConexao.ViewModels;
+
+@model ArteConexao.Pages.User.VisualizacaoCarrinhoModel
+
+@{
+    ViewData["Title"] = "Carrinho";
+}
+
+<!-- Header início -->
+<div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
+    <div class="container">
+        <h1 class="display-3 mb-3 animated slideInDown">Carrinho</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+                <li class="breadcrumb-item"><a class="text-body" href="#">User</a></li>
+                <li class="breadcrumb-item text-dark active" aria-current="page">Carrinho</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- Header fim -->
+<!-- Form início -->
+<div class="container-xxl py-6">
+    <div class="container">
+        <partial name="_Notificacao"></partial>
+        <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+            <h1 class="display-5 mb-3">Carrinho</h1>
+        </div>
+        <div class="row g-5 justify-content-center">
+            <div class="wow fadeInUp" data-wow-delay="0.5s">
+                <div class="container py-5 h-100">
+                    <form method="post">
+                        <div class="row d-flex justify-content-center align-items-center h-100">
+                            <div class="col-12">
+                                <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+                                    <div class="card-body p-0">
+                                        <div class="row g-0">
+                                            <div class="col-lg-8">
+                                                <div class="p-5">
+                                                    <div class="d-flex justify-content-between align-items-center mb-5">
+                                                        <h1 class="fw-bold mb-0 text-black">Itens</h1>
+                                                        <h3 class="mb-0 text-muted">@Model.Produtos.Count()</h3>
+                                                    </div>
+                                                    <hr class="my-4">
+                                                    @{
+                                                        if (Model.CarrinhoViewModel != null)
+                                                        {
+                                                            if (Model.Produtos != null && Model.Produtos.Any())
+                                                            {
+                                                                var indice = 1;
+
+                                                                foreach (var produto in Model.Produtos)
+                                                                {
+                                                                    Model.ItemCarrinhoViewModel = new ItemCarrinhoViewModel();
+                                                                    Model.ItemCarrinhoViewModel.ProdutoId = produto.Id;
+                                                                    Model.ItemCarrinhoViewModel.Valor = (produto.ValorAtual * 0.15m);
+
+                                                                    <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                                                        <div class="col-md-2 col-lg-2 col-xl-2">
+                                                                            <img src="@produto.ImagemUrl" class="img-fluid rounded-3">
+                                                                        </div>
+                                                                        <div class="col-md-3 col-lg-3 col-xl-3">
+                                                                            <h6 class="text-muted">Item @indice</h6>
+                                                                            <h6 class="text-black mb-0">@produto.Nome</h6>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-lg-3 col-xl-3">
+                                                                            <div class="input-group">
+                                                                                <span class="input-group-btn">
+                                                                                    <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus" data-field="">
+                                                                                        <span class="fa fa-minus"></span>
+                                                                                    </button>
+                                                                                </span>
+                                                                                <input type="number" id="iptQuantidade" class="form-control input-number" asp-for="ItemCarrinhoViewModel.Quantidade" value="1" min="1" max="100" required>
+                                                                                <span class="input-group-btn">
+                                                                                    <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
+                                                                                        <span class="fa fa-plus"></span>
+                                                                                    </button>
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                                                            <h6 class="mb-0">R$ @(produto.ValorAtual * 0.15m)</h6>
+                                                                        </div>
+                                                                        <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                                                            <button type="submit" class="btn" asp-page-handler="delete" name="produtoId" value="@produto.Id" title="Remover">
+                                                                                <i class="fas fa-times fa-fw text-dark"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <hr class="my-4">
+
+                                                                    Model.CarrinhoViewModel.ItensCarrinhoViewModel.Add(Model.ItemCarrinhoViewModel);
+                                                                    indice++;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    <div class="pt-5">
+                                                        <h5 class="mb-0">
+                                                            <a href="/default/catalogo/1" class="text-body">
+                                                                <i class="fas fa-long-arrow-alt-left me-2"></i>Voltar ao catálogo
+                                                            </a>
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 bg-grey">
+                                                <div class="p-5">
+                                                    <h3 class="fw-bold mb-5 mt-2 pt-1">Resumo</h3>
+                                                    <hr class="my-4">
+                                                    <div class="d-flex justify-content-between mb-4">
+                                                        <h5>Itens: @Model.Produtos.Count()</h5>
+                                                    </div>
+                                                    <div class="mb-4 pb-2">
+                                                        <div class="form-floating">
+                                                            <select id="sltMeioPagamento" class="form-select">
+                                                                <option selected>Selecione um meio de pagamento</option>
+
+                                                                @foreach (var pais in Enum.GetValues(typeof(MeioPagamento)).Cast<MeioPagamento>())
+                                                                {
+                                                                    <option>@pais.ObterDescricao()</option>
+                                                                }
+                                                            </select>
+                                                            <label for="sltMeioPagamento">Meio de pagamento</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-5">
+                                                        <div class="form-floating">
+                                                            <input id="iptCodigoDesconto" type="text" class="form-control" placeholder="Código de desconto">
+                                                            <label for="iptCodigoDesconto">Código de desconto</label>
+                                                            @*<span class="text-danger" asp-validation-for="ProdutoViewModel.Nome"></span>*@
+                                                        </div>
+                                                    </div>
+                                                    <hr class="my-4">
+                                                    <div class="d-flex justify-content-between mb-5">
+                                                        <h5>Valor total</h5>
+                                                        <h5>R$ @Model.Produtos.Sum(s => (s.ValorAtual * 0.15m))</h5>
+                                                    </div>
+                                                    <button id="btnFinalizar" class="btn btn-primary rounded-pill py-3 px-5" type="submit">Finalizar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Form fim -->
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            var quantitiy = 0;
+            $('.quantity-right-plus').click(function (e) {
+                e.preventDefault();
+                var quantity = parseInt($('#quantidade').val());
+
+                $('#quantidade').val(quantity + 1);
+            });
+
+            $('.quantity-left-minus').click(function (e) {
+                e.preventDefault();
+                var quantity = parseInt($('#quantidade').val());
+
+                if (quantity > 0) {
+                    $('#quantidade').val(quantity - 1);
+                }
+            });
+
+        });
+    </script>
+}

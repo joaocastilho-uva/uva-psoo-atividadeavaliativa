@@ -1,0 +1,199 @@
+﻿@page "{standId:Guid}"
+
+@using ArteConexao.Enums;
+
+@model ArteConexao.Pages.Admin.InclusaoProdutoModel
+
+@{
+    ViewData["Title"] = "Incluir produto";
+}
+
+<body>
+    <!-- Header início -->
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">Inclusão de produto</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Admin</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Inclusão de produto</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Header fim -->
+    <!-- Form início -->
+    <div class="container-xxl py-6">
+        <div class="container">
+            <partial name="_Notificacao"></partial>
+            <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                <h1 class="display-5 mb-3">Incluir produto</h1>
+            </div>
+            <div class="row g-5 justify-content-center">
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <form method="post">
+                        <input type="hidden" asp-for="StandId">
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating">
+                                <input id="iptNome" type="text" class="form-control" asp-for="ProdutoViewModel.Nome" placeholder="Nome" required>
+                                <label for="iptNome">Nome</label>
+                                <span class="text-danger" asp-validation-for="ProdutoViewModel.Nome"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 mb-3">
+                                <div class="card">
+                                    <img id="imgImagemDisplay" src="https://dummyimage.com/500x600/000/fff&text=500x600" style="display:block" />
+                                    <div class="card-body">
+                                        <input id="iptEscolherImagem" class="mt-2" type="file">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <div class="form-floating">
+                                    <textarea id="txtDescricao" class="form-control" asp-for="ProdutoViewModel.Descricao" placeholder="Descrição" required></textarea>
+                                    <span class="text-danger" asp-validation-for="ProdutoViewModel.Descricao"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input id="iptImagemUrl" class="form-control" type="text" placeholder="Imagem URL" asp-for="ProdutoViewModel.ImagemUrl" required readonly>
+                            <label for="iptImagemUrl">Imagem URL</label>
+                            <span class="text-danger" asp-validation-for="ProdutoViewModel.ImagemUrl"></span>
+                        </div>
+                        <hr class="my-4">
+                        <div class="row">
+                            <div class="col-4 mb-3">
+                                <div class="form-floating">
+                                    <input id="iptValorTotal" class="form-control" type="text" placeholder="Valor" value="0,00" asp-for="ProdutoViewModel.ValorTotal" required>
+                                    <label for="iptValorTotal">Valor</label>
+                                    <span class="text-danger" asp-validation-for="ProdutoViewModel.ValorTotal"></span>
+                                </div>
+                            </div>
+                            <div class="col-4 mb-3">
+                                <div class="form-floating">
+                                    <select id="sltPaisOrigem" class="form-select" asp-for="ProdutoViewModel.PaisOrigem">
+                                        <option selected>Selecione um país</option>
+
+                                        @foreach (var pais in Enum.GetValues(typeof(Pais)).Cast<Pais>())
+                                        {
+                                            <option>@pais.ObterDescricao()</option>
+                                        }
+                                    </select>
+                                    <label for="sltPaisOrigem">País origem</label>
+                                </div>
+                            </div>
+                            <div class="col-4 mb-3">
+                                <div class="form-floating">
+                                    <select id="sltCategoria" class="form-select" asp-for="ProdutoViewModel.Categoria">
+                                        <option selected>Selecione uma categoria</option>
+
+                                        @foreach (var categoria in Enum.GetValues(typeof(Categoria)).Cast<Categoria>())
+                                        {
+                                            <option>@categoria.ObterDescricao()</option>
+                                        }
+                                    </select>
+                                    <label for="sltCategoria">Categoria</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input id="iptQantidade" type="text" class="form-control" placeholder="Quantidade" value="0" asp-for="ProdutoViewModel.QuantidadeTotal" required>
+                                    <label for="iptQantidade">Quantidade</label>
+                                    <span class="text-danger" asp-validation-for="ProdutoViewModel.QuantidadeTotal"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input id="iptComprimento" type="text" class="form-control" placeholder="Comprimento" value="0,00" asp-for="ProdutoViewModel.Comprimento" required>
+                                    <label for="iptComprimento">Comprimento</label>
+                                    <span class="text-danger" asp-validation-for="ProdutoViewModel.Comprimento"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input id="iptLargura" type="text" class="form-control" placeholder="Largura" value="0,00" asp-for="ProdutoViewModel.Largura" required>
+                                    <label for="iptLargura">Largura</label>
+                                    <span class="text-danger" asp-validation-for="ProdutoViewModel.Largura"></span>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input id="iptAltura" type="text" class="form-control" placeholder="Altura" value="0,00" asp-for="ProdutoViewModel.Altura" required>
+                                    <label for="iptAltura">Altura</label>
+                                    <span class="text-danger" asp-validation-for="ProdutoViewModel.Altura"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        <div class="row mb-3">
+                            <div class="col-8">
+                                <div class="form-floating mb-3">
+                                    <input id="iptUsuarioInclusao" type="text" class="form-control" placeholder="Usuário inclusão" asp-for="ProdutoViewModel.UsuarioInclusao" required disabled>
+                                    <label for="iptUsuarioInclusao">Usuário inclusão</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input id="iptUsuarioAlteracao" type="text" class="form-control" placeholder="Usuário alteração" asp-for="ProdutoViewModel.UsuarioAlteracao" required disabled>
+                                    <label for="iptUsuarioAlteracao">Usuário alteração</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input id="iptDataInclusao" type="text" class="form-control" placeholder="Data inclusão" asp-for="ProdutoViewModel.DataInclusao" required disabled>
+                                    <label for="iptDataInclusao">Data inclusão</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input id="iptDataAlteracao" type="text" class="form-control" placeholder="Data alteração" asp-for="ProdutoViewModel.DataAlteracao" required disabled>
+                                    <label for="iptDataAlteracao">Data alteração</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <button id="btnSalvar" class="btn btn-primary rounded-pill py-3 px-5" type="submit">Salvar</button>
+                            <a id="btnCancelar" class="btn btn-danger rounded-pill py-3 px-5" href="/admin/gerenciamentoproduto/@Model.StandId" role="button">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Form fim -->
+</body>
+
+@section Scripts{
+    <script>
+        var editor = new FroalaEditor('#txtDescricao', {
+            height: 460
+        });
+
+        const escolherImagemElement = document.getElementById('iptEscolherImagem');
+        const imagemUrlElement = document.getElementById('iptImagemUrl');
+        const imagemDisplayElement = document.getElementById('imgImagemDisplay');
+
+        async function uploadFeaturesImage(e) {
+            console.log(e.target.files[0]);
+
+            let data = new FormData();
+            data.append('imagem', e.target.files[0])
+
+            await fetch('/api/imagem', {
+                method: 'POST',
+                headers: {
+                    'Accept': '*/*'
+                },
+                body: data
+            }).then(response => response.json())
+                .then(result => {
+                    imagemUrlElement.value = result.link;
+                    imagemDisplayElement.style.display = 'block';
+                    imagemDisplayElement.src = result.link;
+                })
+        }
+
+        escolherImagemElement.addEventListener('change', uploadFeaturesImage);
+    </script>
+}

@@ -1,0 +1,112 @@
+﻿@page "{produtoId:Guid}"
+
+@using System.Text.RegularExpressions;
+
+@model ArteConexao.Pages.Default.ItemCatalogoModel
+
+@{
+    ViewData["Title"] = "Itens catálogo";
+}
+
+<body>
+    <!-- Header início -->
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">Item catálogo</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Default</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Item catálogo</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Header fim -->
+    <!-- Form início -->
+    <div class="container-xxl py-3">
+        <div class="container">
+            <partial name="_Notificacao"></partial>
+            <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                <h1 class="display-5 mb-3">Item catálogo</h1>
+            </div>
+            <div class="row g-5 justify-content-center">
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="container-xxl py-5">
+                        <div class="container">
+                            <div class="row g-5 align-items-center">
+                                @if (Model.Produto != null)
+                                {
+                                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                                        <div class="about-img position-relative overflow-hidden p-5 pe-0">
+                                            <img class="img-fluid w-100" src="@Model.Produto.ImagemUrl">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+                                        <h1 class="display-5 mb-4">@Model.Produto.Nome</h1>
+                                        <p class="mb-4">desc</p>
+                                        <p><i class="fa fa-check text-primary me-3"></i>Valor total: R$ @Model.Produto.ValorAtual</p>
+                                        <p><i class="fa fa-check text-primary me-3"></i>Valor reserva: R$ @Model.Produto.ValorReserva</p>
+                                        <p><i class="fa fa-check text-primary me-3"></i>País de origem: @Model.Produto.PaisOrigem</p>
+                                        <p class="mb-5"><i class="fa fa-check text-primary me-3"></i>Specificação: @Model.Produto.Largura (L) x @Model.Produto.Comprimento (C) x @Model.Produto.Altura (A)</p>
+                                        <form action="" method="post">
+                                            <input type="hidden" asp-for="ItemCatalogoViewModel.ProdutoId" value="@Model.Produto.Id">
+                                            <input type="hidden" asp-for="ItemCatalogoViewModel.ValorTotal" value="@Model.Produto.ValorAtual">
+                                            <div class="row">
+                                                <div class="col-lg-4 mt-2">
+                                                    <div class="input-group">
+                                                        <span class="input-group-btn">
+                                                            <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus" data-field="">
+                                                                <span class="fa fa-minus"></span>
+                                                            </button>
+                                                        </span>
+                                                        <input type="number" id="quantidade" asp-for="ItemCatalogoViewModel.Quantidade" class="form-control input-number" value="1" min="1" max="100" required>
+                                                        <span class="input-group-btn">
+                                                            <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
+                                                                <span class="fa fa-plus"></span>
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <a class="btn btn-primary rounded-pill py-3 px-5" href="">Reservar</a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Form fim -->
+</body>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            var quantitiy = 0;
+            $('.quantity-right-plus').click(function (e) {
+                e.preventDefault();
+                var quantity = parseInt($('#quantidade').val());
+
+                $('#quantidade').val(quantity + 1);
+            });
+
+            $('.quantity-left-minus').click(function (e) {
+                e.preventDefault();
+                var quantity = parseInt($('#quantidade').val());
+
+                if (quantity > 0) {
+                    $('#quantidade').val(quantity - 1);
+                }
+            });
+
+        });
+    </script>
+}

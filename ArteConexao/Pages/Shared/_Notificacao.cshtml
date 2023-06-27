@@ -1,0 +1,31 @@
+﻿@using ArteConexao.ViewModels;
+
+@{
+    var notificacao = (NotificacaoViewModel)ViewData["Notificacao"];
+
+    if (notificacao != null)
+    {
+        var notificacaoClasse = "";
+        switch (notificacao.Tipo)
+        {
+            case Enums.TipoNotificacao.Sucesso:
+                notificacaoClasse = "alert-success";
+                break;
+            case Enums.TipoNotificacao.Informativa:
+                notificacaoClasse = "alert-warning";
+                break;
+            case Enums.TipoNotificacao.Erro:
+                notificacaoClasse = "alert-danger";
+                break;
+            default:
+                break;
+        }
+
+        <div class="container" mt-2>
+            <div class="alert @notificacaoClasse alert-dismissible fade show" role="alert">
+                @Html.Raw(notificacao.Mensagem)
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    }
+}

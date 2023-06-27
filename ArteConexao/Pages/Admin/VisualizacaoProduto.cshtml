@@ -1,0 +1,195 @@
+﻿@page "{produtoId:Guid}"
+@using ArteConexao.Enums;
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<IdentityUser> userManager
+
+@model ArteConexao.Pages.Admin.VisualizacaoProdutoModel
+
+@{
+    ViewData["Title"] = "Visualizar produto";
+}
+
+<body>
+    <!-- Header início -->
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">Visualização de produto</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Admin</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Visualização de produto</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Header fim -->
+    <!-- Form início -->
+    <div class="container-xxl py-6">
+        <div class="container">
+            <partial name="_Notificacao"></partial>
+            <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                <h1 class="display-5 mb-3">Visualizar produto</h1>
+            </div>
+            <div class="row g-5 justify-content-center">
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <form method="post">
+                        <div class="col-md-12 mb-3">
+                            <div class="form-floating mb-3">
+                                <input id="iptId" type="text" class="form-control" asp-for="ProdutoViewModel.Id" placeholder="Id" required disabled>
+                                <label for="iptId">Id</label>
+                            </div>
+                            <div class="form-floating">
+                                <input id="iptNome" type="text" class="form-control" asp-for="ProdutoViewModel.Nome" placeholder="Nome" required disabled>
+                                <label for="iptNome">Nome</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 mb-3 d-flex align-items-stretch">
+                                <div class="card">
+                                    @if (!string.IsNullOrWhiteSpace(Model.ProdutoViewModel.ImagemUrl))
+                                    {
+                                        <img id="imgImagemDisplay" src="@Model.ProdutoViewModel.ImagemUrl" style="display:block" />
+                                    }
+                                    else
+                                    {
+                                        <img id="imgImagemDisplay" src="https://dummyimage.com/500x600/000/fff&text=500x600" style="display:block" />
+                                    }
+
+                                    <div class="card-body">
+                                        <input id="iptEscolherImagem" class="mt-2" type="file" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 mb-3">
+                                <div class="form-floating">
+                                    <textarea id="txtDescricao" class="form-control" asp-for="ProdutoViewModel.Descricao" placeholder="Descrição" required disabled></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input id="iptImagemUrl" class="form-control" type="text" placeholder="Imagem URL" asp-for="ProdutoViewModel.ImagemUrl" required disabled>
+                            <label for="iptImagemUrl">Imagem URL</label>
+                        </div>
+
+                        <div class="hr-sect">ESPECIFICAÇÃO</div>
+
+                        <div class="row">
+                            <div class="col-4 mb-3">
+                                <div class="form-floating">
+                                    <input id="iptValorTotal" class="form-control" type="text" placeholder="Valor" asp-for="ProdutoViewModel.ValorTotal" required disabled>
+                                    <label for="iptValorTotal">Valor</label>
+                                </div>
+                            </div>
+                            <div class="col-4 mb-3">
+                                <div class="form-floating">
+                                    <select id="sltPaisOrigem" class="form-select" disabled>
+                                        <option selected>Selecione um país</option>
+
+                                        @foreach (var pais in Enum.GetValues(typeof(Pais)).Cast<Pais>())
+                                        {
+                                            if (Model.ProdutoViewModel.PaisOrigem == pais)
+                                            {
+                                                <option selected>@pais.ObterDescricao()</option>
+                                            }
+                                        }
+                                    </select>
+                                    <label for="sltPaisOrigem">País origem</label>
+                                </div>
+                            </div>
+                            <div class="col-4 mb-3">
+                                <div class="form-floating">
+                                    <select id="sltCategoria" class="form-select" disabled>
+                                        <option selected>Selecione uma categoria</option>
+
+                                        @foreach (var categoria in Enum.GetValues(typeof(Categoria)).Cast<Categoria>())
+                                        {
+                                            if (Model.ProdutoViewModel.Categoria == categoria)
+                                            {
+                                                <option selected>@categoria.ObterDescricao()</option>
+                                            }
+                                        }
+                                    </select>
+                                    <label for="sltCategoria">Categoria</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-3">
+                                    <input id="iptQantidade" type="text" class="form-control" placeholder="Quantidade" asp-for="ProdutoViewModel.QuantidadeTotal" required disabled>
+                                    <label for="iptQantidade">Quantidade</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input id="iptComprimento" type="text" class="form-control" placeholder="Comprimento" asp-for="ProdutoViewModel.Comprimento" required disabled>
+                                    <label for="iptComprimento">Comprimento</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input id="iptLargura" type="text" class="form-control" placeholder="Largura" asp-for="ProdutoViewModel.Largura" required disabled>
+                                    <label for="iptLargura">Largura</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input id="iptAltura" type="text" class="form-control" placeholder="Altura" asp-for="ProdutoViewModel.Altura" required disabled>
+                                    <label for="iptAltura">Altura</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hr-sect">AUDITORIA</div>
+
+                        <div class="row mb-3">
+                            <div class="col-8">
+                                <div class="form-floating mb-3">
+                                    <input id="iptUsuarioInclusao" type="text" class="form-control" value="@userManager.FindByIdAsync(Model.ProdutoViewModel.UsuarioInclusao.ToString()).Result.UserName" placeholder="Usuário inclusão" asp-for="ProdutoViewModel.UsuarioInclusao" required disabled>
+                                    <label for="iptUsuarioInclusao">Usuário inclusão</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    @if (Model.ProdutoViewModel.UsuarioAlteracao.HasValue)
+                                    {
+                                        <input id="iptUsuarioAlteracao" type="text" class="form-control" value="@userManager.FindByIdAsync(Model.ProdutoViewModel.UsuarioAlteracao.ToString()).Result.UserName" placeholder="Usuário alteração" asp-for="ProdutoViewModel.UsuarioAlteracao" required disabled>
+                                    }
+                                    else
+                                    {
+                                        <input id="iptUsuarioAlteracao" type="text" class="form-control" placeholder="Usuário alteração" asp-for="ProdutoViewModel.UsuarioAlteracao" required disabled>
+                                    }
+
+                                    <label for="iptUsuarioAlteracao">Usuário alteração</label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input id="iptDataInclusao" type="text" class="form-control" placeholder="Data inclusão" asp-for="ProdutoViewModel.DataInclusao" required disabled>
+                                    <label for="iptDataInclusao">Data inclusão</label>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input id="iptDataAlteracao" type="text" class="form-control" placeholder="Data alteração" asp-for="ProdutoViewModel.DataAlteracao" required disabled>
+                                    <label for="iptDataAlteracao">Data alteração</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-center">
+                            <a id="btnVoltar" class="btn btn-primary rounded-pill py-3 px-5" href="/admin/gerenciamentoproduto/@Model.ProdutoViewModel.StandId" role="button">Voltar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Form fim -->
+</body>
+
+@section Scripts{
+    <script>
+        var editor = new FroalaEditor('#txtDescricao', {
+            height: 460
+        });
+    </script>
+}

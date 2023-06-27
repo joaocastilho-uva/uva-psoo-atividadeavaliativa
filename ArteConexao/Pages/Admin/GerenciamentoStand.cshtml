@@ -1,0 +1,107 @@
+﻿@page
+
+@model ArteConexao.Pages.Admin.GerenciamentoStandModel
+
+@{
+    ViewData["Title"] = "Gerenciar stands";
+}
+
+<body>
+    <!-- Header início -->
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">Gerenciamento de stands</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Default</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Gerenciamento de stands</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Header fim -->
+    <!-- Grid início -->
+    <div class="container-xxl py-3">
+        <div class="container">
+            <partial name="_Notificacao"></partial>
+            <div class="row g-5 justify-content-center">
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="container mt-3 mb-3">
+                        <a href="/Admin/InclusaoStand" class="btn btn-success rounded-pill py-3 px-5" role="button">Incluir stand</a>
+                    </div>
+                    @if (Model.Stands != null && Model.Stands.Any())
+                    {
+                        <div class="container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Id</th>
+                                        <th>Nome</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var indice = 1;
+
+                                        @foreach (var stand in Model.Stands)
+                                        {
+                                            <tr>
+                                                <td>@indice</td>
+                                                <td>@stand.Id</td>
+                                                <td>@stand.Nome</td>
+                                                <td>
+                                                    <a href="/Admin/VisualizacaoStand/@stand.Id" role="button" class="btn" title="Visualizar">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="/Admin/EdicaoStand/@stand.Id" role="button" class="btn" title="Editar">
+                                                        <i class="fa fa-pen"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="/Admin/GerenciamentoUsuario/@stand.Id" role="button" class="btn" title="Gerenciar usuários">
+                                                        <i class="fa fa-user"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="/Admin/GerenciamentoProduto/@stand.Id" role="button" class="btn" title="Gerenciar produtos">
+                                                        <i class="fa fa-cube"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="/Admin/GerenciamentoReserva/@stand.Id" role="button" class="btn" title="Gerenciar reservas">
+                                                        <i class="fa fa-shopping-basket"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <form method="post">
+                                                        <button type="submit" class="btn" asp-page-handler="ativardesativar" name="id" value="@stand.Id" title="Ativar/Desativar">
+                                                            <i class="fa fa-power-off"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+
+                                            indice++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Grid fim -->
+</body>

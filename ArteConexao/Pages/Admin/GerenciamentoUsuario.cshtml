@@ -1,0 +1,90 @@
+﻿@page "{standId:Guid}"
+
+@model ArteConexao.Pages.Admin.GerenciamentoUsuarioModel
+
+@{
+    ViewData["Title"] = "Gerenciar usuários";
+}
+
+<body>
+    <!-- Header início -->
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">Gerenciamento de usuários</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Default</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Gerenciamento de usuários</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Header fim -->
+    <!-- Grid início -->
+    <div class="container-xxl py-3">
+        <div class="container">
+            <partial name="_Notificacao"></partial>
+            <div class="row g-5 justify-content-center">
+                <div class="wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="container mt-3 mb-3">
+                        <a href="/Admin/InclusaoUsuario/@Model.StandId" class="btn btn-success rounded-pill py-3 px-5" role="button">Incluir Usuário</a>
+                    </div>
+                    @if (Model.Usuarios.Any())
+                    {
+                        <div class="container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Id</th>
+                                        <th>Nome</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var indice = 1;
+
+                                        @foreach (var usuario in Model.Usuarios)
+                                        {
+                                            <tr>
+                                                <td>@indice</td>
+                                                <td>@usuario.Id</td>
+                                                <td>@usuario.UserName</td>
+                                                <td>
+                                                    <a href="/admin/visualizacaousuario/@usuario.Id" role="button" class="btn" title="Visualizar">
+                                                        <i class="fa fa-eye fa-fw text-dark"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="/admin/edicaousuario/@usuario.Id" role="button" class="btn" title="Editar">
+                                                        <i class="fa fa-pen fa-fw text-dark"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <form method="post">
+                                                        <input type="hidden" asp-for="StandId">
+                                                        <button id="btnExcluir" class="btn" asp-page-handler="delete" type="submit" name="id" value="@usuario.Id" title="Excluir">
+                                                            <i class="fa fa-times fa-fw text-dark"></i>
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+
+                                            indice++;
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Grid fim -->
+</body>

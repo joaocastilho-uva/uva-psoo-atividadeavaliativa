@@ -1,0 +1,72 @@
+﻿@page "{usuarioId:Guid}"
+
+@model ArteConexao.Pages.Admin.EdicaoUsuarioModel
+
+@{
+    ViewData["Title"] = "Editar usuário";
+}
+
+<body>
+    <!-- Header início -->
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">Edição de usuário</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Admin</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Edição de usuário</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Header fim -->
+    <!-- Form início -->
+    <div class="container-xxl py-6">
+        <div class="container">
+            <partial name="_Notificacao"></partial>
+            <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+                <h1 class="display-5 mb-3">Editar usuário</h1>
+            </div>
+            <div class="row g-5 justify-content-center">
+                <div class="col-lg-7 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
+                    <form method="get">
+                        <input type="hidden" asp-for="StandId">
+                        <div class="form-floating mb-3">
+                            <input id="iptId" type="text" class="form-control" asp-for="UsuarioViewModel.Id" placeholder="Id" required disabled />
+                            <label for="iptId">Id</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input id="iptNome" type="text" class="form-control" asp-for="UsuarioViewModel.Nome" placeholder="Nome" required />
+                            <label for="iptNome">Nome</label>
+                            <span class="text-danger" asp-validation-for="UsuarioViewModel.Nome"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input id="iptEmail" type="email" class="form-control" asp-for="UsuarioViewModel.Email" placeholder="Email" required>
+                            <label for="iptEmail">Email</label>
+                            <span class="text-danger" asp-validation-for="UsuarioViewModel.Email"></span>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input id="iptSenha" type="password" class="form-control" asp-for="UsuarioViewModel.Senha" placeholder="Senha" required minlength="6" />
+                            <label for="iptSenha">Senha</label>
+                            <span class="text-danger" asp-validation-for="UsuarioViewModel.Senha"></span>
+                        </div>
+                        @if (User.IsInRole("SuperAdmin"))
+                        {
+                            <div class="form-check mb-3">
+                                <input id="chkAdmin" class="form-check-input" type="checkbox" asp-for="UsuarioViewModel.Admin">
+                                <label for="chkAdmin">Admin</label>
+                            </div>
+                        }
+                        <div class="col-md-12 text-center">
+                            <button id="btnCadastrar" class="btn btn-primary rounded-pill py-3 px-5" type="submit">Cadastrar</button>
+                            <a id="btnCancelar" class="btn btn-danger rounded-pill py-3 px-5" href="/admin/gerenciamentousuario/@Model.StandId" role="button">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Form fim -->
+</body>

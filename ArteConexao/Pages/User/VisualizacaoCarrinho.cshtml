@@ -36,6 +36,10 @@
                 <div class="wow fadeInUp" data-wow-delay="0.5s">
                     <div class="container py-5 h-100">
                         <form method="post">
+                            <input type="hidden" value="@Model.CarrinhoViewModel.Id" asp-for="CarrinhoViewModel.Id">
+                            <input type="hidden" value="@Model.CarrinhoViewModel.UsuarioId" asp-for="CarrinhoViewModel.UsuarioId">
+                            <input type="hidden" value="@Model.CarrinhoViewModel.ValorTotal" asp-for="CarrinhoViewModel.ValorTotal">
+
                             <div class="row d-flex justify-content-center align-items-center h-100">
                                 <div class="col-12">
                                     <div class="card card-registration card-registration-2" style="border-radius: 15px;">

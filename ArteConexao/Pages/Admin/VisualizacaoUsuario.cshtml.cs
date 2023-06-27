@@ -1,8 +1,6 @@
-using ArteConexao.Enums;
 using ArteConexao.Repositories.Interfaces;
 using ArteConexao.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ArteConexao.Pages.Admin
@@ -10,6 +8,7 @@ namespace ArteConexao.Pages.Admin
     public class VisualizacaoUsuarioModel : PageModel
     {
         private readonly IUsuarioRepository usuarioRepository;
+        private readonly IStandRepository standRepository;
         private readonly UserManager<IdentityUser> userManager;
 
         public UsuarioViewModel UsuarioViewModel { get; set; }
@@ -17,9 +16,11 @@ namespace ArteConexao.Pages.Admin
         public Guid StandId { get; set; }
 
         public VisualizacaoUsuarioModel(IUsuarioRepository usuarioRepository,
+            IStandRepository standRepository,
             UserManager<IdentityUser> userManager)
         {
             this.usuarioRepository = usuarioRepository;
+            this.standRepository = standRepository;
             this.userManager = userManager;
         }
 
@@ -38,6 +39,13 @@ namespace ArteConexao.Pages.Admin
                         Email = usuarioDb.Email,
                         Admin = await userManager.IsInRoleAsync(usuarioDb, "Admin")
                     };
+
+                    var stand = await standRepository.GetByUserAsync(usuarioDb);
+
+                    if (stand != null)
+                    {
+                        StandId = stand.Id;
+                    }
                 }
             }
         }

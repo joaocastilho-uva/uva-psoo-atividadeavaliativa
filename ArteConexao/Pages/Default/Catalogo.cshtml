@@ -23,10 +23,10 @@
     </div>
     <!-- Header fim -->
     <!-- Produtos início -->
-    <div class="container-xxl py-5">
+    <div class="container-xxl py-3">
         <div class="container">
             <partial name="_Notificacao"></partial>
-            @if (Model.Produtos.Any())
+            @if (Model.ItensCatalogoViewModel.Any())
             {
                 <div class="row g-0 gx-5 align-items-end">
                     <div class="col-lg-6">
@@ -54,32 +54,41 @@
                 <div class="tab-content">
                     <div id="tab-1" class="tab-pane fade show p-0 active">
                         <div class="row g-4">
-
-
-                            @foreach (var produto in Model.Produtos)
+                            @for (int i = 0; i < Model.ItensCatalogoViewModel.Count; i++)
                             {
                                 <div class="col-xl-3 col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                                     <div class="product-item">
                                         <div class="position-relative bg-light overflow-hidden">
-                                            <img class="img-fluid w-100" src="@produto.ImagemUrl" alt="">
+                                            <img class="img-fluid w-100" src="@Model.ItensCatalogoViewModel[i].ImagemUrl" alt="">
                                             <div class="bg-secondary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">New</div>
                                         </div>
                                         <div class="text-center p-4">
-                                            <a class="d-block h5 mb-2" href="">@produto.Nome</a>
-                                            <span class="text-primary me-1">R$ @produto.ValorAtual</span>
+                                            <a class="d-block h5 mb-2" href="">@Model.ItensCatalogoViewModel[i].Nome</a>
+                                            <span class="text-primary me-1">R$ @Model.ItensCatalogoViewModel[i].ValorAtual</span>
 
-                                            @if (@produto.ValorAtual != @produto.ValorTotal)
+                                            @if (Model.ItensCatalogoViewModel[i].ValorAtual != Model.ItensCatalogoViewModel[i].ValorTotal)
                                             {
-                                                <span class="text-body text-decoration-line-through">R$ @produto.ValorTotal</span>
+                                                <span class="text-body text-decoration-line-through">R$ @Model.ItensCatalogoViewModel[i].ValorTotal</span>
                                             }
                                         </div>
                                         <div class="d-flex border-top">
                                             <div class="w-50 text-center border-end py-2">
-                                                <a class="text-body" href="/Default/ItemCatalogo/@produto.Id"><i class="fa fa-eye text-primary me-2"></i>Visualizar</a>
+                                                <a class="text-body" href="/Default/ItemCatalogo/@Model.ItensCatalogoViewModel[i].ProdutoId"><i class="fa fa-eye text-primary me-2"></i>Visualizar</a>
                                             </div>
                                             <form method="post">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].ProdutoId" value="@Model.ItensCatalogoViewModel[i].ProdutoId">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].Nome" value="@Model.ItensCatalogoViewModel[i].Nome">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].Descricao" value="@Model.ItensCatalogoViewModel[i].Descricao">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].ImagemUrl" value="@Model.ItensCatalogoViewModel[i].ImagemUrl">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].Comprimento" value="@Model.ItensCatalogoViewModel[i].Comprimento">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].Largura" value="@Model.ItensCatalogoViewModel[i].Largura">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].Altura" value="@Model.ItensCatalogoViewModel[i].Altura">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].ValorTotal" value="@Model.ItensCatalogoViewModel[i].ValorTotal">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].ValorAtual" value="@Model.ItensCatalogoViewModel[i].ValorAtual">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].ValorReserva" value="@Model.ItensCatalogoViewModel[i].ValorReserva">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].QuantidadeDisponivel" value="@Model.ItensCatalogoViewModel[i].QuantidadeDisponivel">
                                                 <small class="w-50 text-center py-2">
-                                                    <button type="submit" class="btn text-body" asp-page-handler="reserva" name="produtoId" value="@produto.Id" title="Incluir carrinho">
+                                                    <button type="submit" class="btn text-body" asp-page-handler="reserva" name="produtoId" value="@Model.ItensCatalogoViewModel[i].ProdutoId" title="Incluir carrinho">
                                                         <i class="fa fa-shopping-bag text-primary me-2"></i>
                                                         Reservar
                                                     </button>
@@ -89,7 +98,6 @@
                                     </div>
                                 </div>
                             }
-
                             <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.1s">
                                 <a class="btn btn-primary rounded-pill py-3 px-5" href="">Ver mais</a>
                             </div>

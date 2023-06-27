@@ -65,7 +65,7 @@ namespace ArteConexao.Pages.Admin
                         }
 
                         SetTempData(TipoNotificacao.Sucesso, "Usuário cadastrado com sucesso.");
-                        return Redirect($"/admin/gerenciamentousuario/{StandId}");
+                        return Redirect($"/Admin/GerenciamentoUsuario/{StandId}");
                     }
                     else
                     {

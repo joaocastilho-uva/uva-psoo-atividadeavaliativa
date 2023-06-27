@@ -1,6 +1,5 @@
 using ArteConexao.Enums;
 using ArteConexao.Models;
-using ArteConexao.Repositories;
 using ArteConexao.Repositories.Interfaces;
 using ArteConexao.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -20,7 +19,9 @@ namespace ArteConexao.Pages.Default
 
         [BindProperty]
         public ItemCatalogoViewModel ItemCatalogoViewModel { get; set; }
+
         public Produto Produto { get; set; }
+
         [BindProperty]
         public Categoria Categoria { get; set; }
 
@@ -39,18 +40,43 @@ namespace ArteConexao.Pages.Default
 
         public async Task OnGet(Guid produtoId)
         {
-            Produto = await produtoRepository.GetAsync(produtoId);
+            try
+            {
+                var produtoDb = await produtoRepository.GetAsync(produtoId);
+
+                if (produtoDb != null)
+                {
+                    ItemCatalogoViewModel = new ItemCatalogoViewModel()
+                    {
+                        ProdutoId = produtoDb.Id,
+                        Nome = produtoDb.Nome,
+                        Descricao = produtoDb.Descricao,
+                        ImagemUrl = produtoDb.ImagemUrl,
+                        PaisOrigem = produtoDb.PaisOrigem,
+                        QuantidadeDisponivel = produtoDb.QuantidadeDisponivel,
+                        Comprimento = produtoDb.Comprimento,
+                        Largura = produtoDb.Largura,
+                        Altura = produtoDb.Altura,
+                        ValorAtual = produtoDb.ValorAtual,
+                        ValorReserva = produtoDb.ValorReserva
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                SetViewData(TipoNotificacao.Erro, $"Não foi possível carregar o produto {ex.Message}.");
+            }
         }
 
-        public async Task<IActionResult> OnPostReservar(Guid produtoId)
+        public async Task<IActionResult> OnPost()
         {
             try
             {
                 if (signInManager.IsSignedIn(User))
                 {
-                    var produto = await produtoRepository.GetAsync(produtoId);
-
-                    if (produto != null && produto.Id != Guid.Empty)
+                    if (ItemCatalogoViewModel != null
+                        && ItemCatalogoViewModel.ProdutoId != Guid.Empty
+                        && ItemCatalogoViewModel.QuantidadeDisponivel > 0)
                     {
                         var usuarioId = new Guid(userManager.GetUserId(User));
                         var carrinho = await carrinhoRepository.GetAsync(usuarioId);
@@ -68,56 +94,58 @@ namespace ArteConexao.Pages.Default
                             {
                                 var itemCarrinho = new ItemCarrinho();
 
-                                if (carrinho.ItensCarrinho.Any())
-                                {
-                                    var itemCarrinhoId = carrinho.ItensCarrinho.Where(w => w.ProdutoId == produtoId).Select(s => s.Id).FirstOrDefault();
+                                itemCarrinho.CarrinhoId = carrinho.Id;
+                                itemCarrinho.ProdutoId = ItemCatalogoViewModel.ProdutoId;
+                                itemCarrinho.ImagemUrl = ItemCatalogoViewModel.ImagemUrl;
+                                itemCarrinho.ValorTotal = ItemCatalogoViewModel.ValorAtual;
+                                itemCarrinho.Quantidade = ItemCatalogoViewModel.Quantidade;
+                                itemCarrinho.ValorReserva = ItemCatalogoViewModel.ValorReserva;
 
-                                    if (itemCarrinhoId != Guid.Empty)
-                                    {
-                                        itemCarrinho = await itemCarrinhoRepository.GetAsync(itemCarrinhoId);
-                                        itemCarrinho.Quantidade += 1;
+                                carrinho.ItensCarrinho.Add(itemCarrinho);
+                                carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
+                                await carrinhoRepository.UpdateAsync(carrinho);
 
-                                        await itemCarrinhoRepository.UpdateAsync(itemCarrinho);
-                                        carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
-                                    }
-                                }
-                                else
-                                {
-                                    itemCarrinho.CarrinhoId = carrinho.Id;
-                                    itemCarrinho.ProdutoId = produto.Id;
-                                    itemCarrinho.ImagemUrl = produto.ImagemUrl;
-                                    itemCarrinho.Quantidade = 1;
-                                    itemCarrinho.ValorReserva = (produto.ValorAtual * 0.15m);
-
-                                    carrinho.ItensCarrinho.Add(itemCarrinho);
-                                    carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
-                                    await carrinhoRepository.UpdateAsync(carrinho);
-                                }
+                                SetViewData(TipoNotificacao.Informativa, "Produto adicionado ao carrinho com sucesso.");
                             }
                         }
                         else
                         {
-                            var itemCarrinho = new ItemCarrinho()
-                            {
-                                CarrinhoId = carrinho.Id,
-                                ProdutoId = produto.Id,
-                                ImagemUrl = produto.ImagemUrl,
-                                Quantidade = 1,
-                                ValorReserva = (produto.ValorAtual * 0.15m)
-                            };
+                            var itemCarrinho = new ItemCarrinho();
 
-                            carrinho.ItensCarrinho.Add(itemCarrinho);
-                            await carrinhoRepository.UpdateAsync(carrinho);
+                            if (carrinho.ItensCarrinho.Any())
+                            {
+                                var itemCarrinhoId = carrinho.ItensCarrinho.Where(w => w.ProdutoId == ItemCatalogoViewModel.ProdutoId).Select(s => s.Id).FirstOrDefault();
+
+                                if (itemCarrinhoId != Guid.Empty)
+                                {
+                                    SetViewData(TipoNotificacao.Informativa, "Produto já adicionado ao carrinho.");
+                                }
+                            }
+                            else
+                            {
+                                itemCarrinho.CarrinhoId = carrinho.Id;
+                                itemCarrinho.ProdutoId = ItemCatalogoViewModel.ProdutoId;
+                                itemCarrinho.ImagemUrl = ItemCatalogoViewModel.ImagemUrl;
+                                itemCarrinho.ValorTotal = ItemCatalogoViewModel.ValorAtual;
+                                itemCarrinho.Quantidade = ItemCatalogoViewModel.Quantidade;
+                                itemCarrinho.ValorReserva = ItemCatalogoViewModel.ValorReserva;
+
+                                carrinho.ItensCarrinho.Add(itemCarrinho);
+                                carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
+                                await carrinhoRepository.UpdateAsync(carrinho);
+
+                                SetViewData(TipoNotificacao.Informativa, "Produto adicionado ao carrinho com sucesso.");
+                            }
                         }
                     }
                 }
 
-                return Redirect($"/Default/Catalogo/{(int)Categoria}");
+                return Page();
             }
             catch (Exception ex)
             {
                 SetViewData(TipoNotificacao.Erro, $"Não foi possível incluir o produto no carrinho: {ex.Message}");
-                return Redirect($"/Default/Catalogo/{(int)Categoria}");
+                return Page();
             }
         }
 

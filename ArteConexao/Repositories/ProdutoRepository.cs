@@ -23,11 +23,6 @@ namespace ArteConexao.Repositories
             return produto;
         }
 
-        //public async Task<IEnumerable<Produto>> AddAllAsync()
-        //{
-        //    return await arteConexaoDbContext.Produtos.ToListAsync();
-        //}
-
         public async Task<Produto> GetAsync(Guid id)
         {
             return await arteConexaoDbContext.Produtos.FirstOrDefaultAsync(x => x.Id == id);
@@ -94,6 +89,11 @@ namespace ArteConexao.Repositories
             }
 
             return false;
+        }
+
+        public async Task<int> ObterQuantidadeDisponivelAsync(Guid produtoId)
+        {
+            return arteConexaoDbContext.Produtos.FirstOrDefaultAsync(x => x.Id == produtoId).Result.QuantidadeDisponivel;
         }
     }
 }

@@ -2,8 +2,10 @@ using ArteConexao.Enums;
 using ArteConexao.Models;
 using ArteConexao.Repositories.Interfaces;
 using ArteConexao.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Text.Json;
 
 namespace ArteConexao.Pages.User
 {
@@ -12,6 +14,7 @@ namespace ArteConexao.Pages.User
         private readonly ICarrinhoRepository carrinhoRepository;
         private readonly IItemCarrinhoRepository itemCarrinhoRepository;
         private readonly IProdutoRepository produtoRepository;
+        private readonly UserManager<IdentityUser> userManager;
 
         [BindProperty]
         public CarrinhoViewModel CarrinhoViewModel { get; set; }
@@ -21,17 +24,20 @@ namespace ArteConexao.Pages.User
 
         public VisualizacaoCarrinhoModel(ICarrinhoRepository carrinhoRepository,
             IItemCarrinhoRepository itemCarrinhoRepository,
-            IProdutoRepository produtoRepository)
+            IProdutoRepository produtoRepository,
+            UserManager<IdentityUser> userManager)
         {
             this.carrinhoRepository = carrinhoRepository;
             this.itemCarrinhoRepository = itemCarrinhoRepository;
             this.produtoRepository = produtoRepository;
-
+            this.userManager = userManager;
             ItensCarrinhoViewModel = new List<ItemCarrinhoViewModel>();
         }
 
         public async Task OnGet(Guid usuarioId)
         {
+            GetTempData();
+
             var carrinho = await carrinhoRepository.GetAsync(usuarioId);
 
             if (carrinho != null)
@@ -86,21 +92,21 @@ namespace ArteConexao.Pages.User
 
                     if (excluido)
                     {
-                        var carrinhoDb = await carrinhoRepository.GetAsync(CarrinhoViewModel.Id);
+                        var carrinhoDb = await carrinhoRepository.GetAsync(CarrinhoViewModel.UsuarioId);
 
                         if (carrinhoDb.ItensCarrinho.Any())
                         {
-                            carrinhoDb.ValorTotal += carrinhoDb.ItensCarrinho.ToList().Sum(s => (s.ValorReserva * s.Quantidade));
+                            carrinhoDb.ValorTotal = carrinhoDb.ItensCarrinho.ToList().Sum(s => (s.ValorReserva * s.Quantidade));
                             await carrinhoRepository.UpdateAsync(carrinhoDb);
 
-                            SetViewData(TipoNotificacao.Sucesso, "Produto removido com sucesso.");
+                            SetTempData(TipoNotificacao.Sucesso, "Produto removido com sucesso.");
                         }
                         else
                         {
                             carrinhoDb.ValorTotal = 0;
                             await carrinhoRepository.UpdateAsync(carrinhoDb);
 
-                            //return RedirectToPage($"/User/VisualizacaoCarrinho/@userManager.GetUserId(User)");
+                            return Redirect($"/User/VisualizacaoCarrinho/{@userManager.GetUserId(User)}");
                         }
                     }
                 }
@@ -129,6 +135,27 @@ namespace ArteConexao.Pages.User
             };
 
             ViewData["Notificacao"] = notificacao;
+        }
+
+        private void GetTempData()
+        {
+            var notificaticao = (string)TempData["Notificacao"];
+
+            if (!string.IsNullOrWhiteSpace(notificaticao))
+            {
+                ViewData["Notificacao"] = JsonSerializer.Deserialize<NotificacaoViewModel>(notificaticao.ToString()); ;
+            }
+        }
+
+        private void SetTempData(TipoNotificacao tipoNotificacao, string mensagem)
+        {
+            var notificacao = new NotificacaoViewModel
+            {
+                Tipo = tipoNotificacao,
+                Mensagem = mensagem
+            };
+
+            TempData["Notificacao"] = JsonSerializer.Serialize(notificacao);
         }
     }
 }

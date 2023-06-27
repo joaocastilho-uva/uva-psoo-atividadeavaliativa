@@ -17,7 +17,9 @@ namespace ArteConexao.Pages.Default
         private readonly SignInManager<IdentityUser> signInManager;
         private readonly UserManager<IdentityUser> userManager;
 
-        public List<Produto> Produtos { get; set; }
+        [BindProperty]
+        public List<ItemCatalogoViewModel> ItensCatalogoViewModel { get; set; }
+
         [BindProperty]
         public Categoria Categoria { get; set; }
 
@@ -32,19 +34,42 @@ namespace ArteConexao.Pages.Default
             this.itemCarrinhoRepository = itemCarrinhoRepository;
             this.signInManager = signInManager;
             this.userManager = userManager;
+
+            ItensCatalogoViewModel = new List<ItemCatalogoViewModel>();
         }
 
-        public async Task<IActionResult> OnGet(Categoria categoria)
+        public async Task OnGet(Categoria categoria)
         {
             Categoria = categoria;
-            Produtos = (await produtoRepository.GetAllAsync(categoria)).ToList();
 
-            if (!Produtos.Any())
+            var produtosDb = (await produtoRepository.GetAllAsync(categoria)).ToList();
+
+            if (produtosDb.Any())
+            {
+                foreach (var produtoDb in produtosDb)
+                {
+                    ItensCatalogoViewModel.Add(
+                        new ItemCatalogoViewModel()
+                        {
+                            ProdutoId = produtoDb.Id,
+                            Nome = produtoDb.Nome,
+                            Descricao = produtoDb.Descricao,
+                            ImagemUrl = produtoDb.ImagemUrl,
+                            PaisOrigem = produtoDb.PaisOrigem,
+                            QuantidadeDisponivel = produtoDb.QuantidadeDisponivel,
+                            Comprimento = produtoDb.Comprimento,
+                            Largura = produtoDb.Largura,
+                            Altura = produtoDb.Altura,
+                            ValorTotal = produtoDb.ValorTotal,
+                            ValorAtual = produtoDb.ValorAtual,
+                            ValorReserva = produtoDb.ValorReserva
+                        });
+                }
+            }
+            else
             {
                 SetViewData(TipoNotificacao.Erro, "Nenhum produto encontrado.");
             }
-
-            return Page();
         }
 
         public async Task<IActionResult> OnPostReserva(Guid produtoId)
@@ -53,9 +78,11 @@ namespace ArteConexao.Pages.Default
             {
                 if (signInManager.IsSignedIn(User))
                 {
-                    var produto = await produtoRepository.GetAsync(produtoId);
+                    var itemCatalogoViewModel = ItensCatalogoViewModel.FirstOrDefault(w => w.ProdutoId == produtoId);
 
-                    if (produto != null && produto.Id != Guid.Empty)
+                    if (itemCatalogoViewModel != null
+                        && itemCatalogoViewModel.ProdutoId != Guid.Empty
+                        && itemCatalogoViewModel.QuantidadeDisponivel > 0)
                     {
                         var usuarioId = new Guid(userManager.GetUserId(User));
                         var carrinho = await carrinhoRepository.GetAsync(usuarioId);
@@ -73,63 +100,58 @@ namespace ArteConexao.Pages.Default
                             {
                                 var itemCarrinho = new ItemCarrinho();
 
-                                if (carrinho.ItensCarrinho.Any())
-                                {
-                                    var itemCarrinhoId = carrinho.ItensCarrinho.Where(w => w.ProdutoId == produtoId).Select(s => s.Id).FirstOrDefault();
+                                itemCarrinho.CarrinhoId = carrinho.Id;
+                                itemCarrinho.ProdutoId = itemCatalogoViewModel.ProdutoId;
+                                itemCarrinho.ImagemUrl = itemCatalogoViewModel.ImagemUrl;
+                                itemCarrinho.Quantidade = itemCatalogoViewModel.Quantidade;
+                                itemCarrinho.ValorTotal = itemCatalogoViewModel.ValorAtual;
+                                itemCarrinho.ValorReserva = itemCatalogoViewModel.ValorReserva;
 
-                                    if (itemCarrinhoId != Guid.Empty)
-                                    {
-                                        itemCarrinho = await itemCarrinhoRepository.GetAsync(itemCarrinhoId);
-                                        itemCarrinho.Quantidade += 1;
+                                carrinho.ItensCarrinho.Add(itemCarrinho);
+                                carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
+                                await carrinhoRepository.UpdateAsync(carrinho);
 
-                                        await itemCarrinhoRepository.UpdateAsync(itemCarrinho);
-                                        carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
-                                    }
-                                }
-                                else
-                                {
-                                    itemCarrinho.CarrinhoId = carrinho.Id;
-                                    itemCarrinho.ProdutoId = produto.Id;
-                                    itemCarrinho.StandId = produto.StandId;
-                                    itemCarrinho.Quantidade = 1;
-                                    itemCarrinho.ImagemUrl = produto.ImagemUrl;
-                                    itemCarrinho.ValorReserva = (produto.ValorAtual * 0.15m);
-
-                                    await AtualizarCarrinho(carrinho, itemCarrinho, (itemCarrinho.ValorReserva * itemCarrinho.Quantidade));
-                                    //carrinho.ItensCarrinho.Add(itemCarrinho);
-                                    //carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
-                                    //await carrinhoRepository.UpdateAsync(carrinho);
-                                }
+                                SetViewData(TipoNotificacao.Informativa, "Produto adicionado ao carrinho com sucesso.");
                             }
                         }
                         else
                         {
-                            var itemCarrinho = new ItemCarrinho()
+                            var itemCarrinho = new ItemCarrinho();
+
+                            if (carrinho.ItensCarrinho.Any())
                             {
-                                CarrinhoId = carrinho.Id,
-                                ProdutoId = produto.Id,
-                                StandId = produto.StandId,
-                                Quantidade = 1,
-                                ImagemUrl = produto.ImagemUrl,
-                                ValorReserva = (produto.ValorAtual * 0.15m)
-                            };
+                                var itemCarrinhoId = carrinho.ItensCarrinho.Where(w => w.ProdutoId == itemCatalogoViewModel.ProdutoId).Select(s => s.Id).FirstOrDefault();
 
-                            await AtualizarCarrinho(carrinho, itemCarrinho, (itemCarrinho.ValorReserva * itemCarrinho.Quantidade));
+                                if (itemCarrinhoId != Guid.Empty)
+                                {
+                                    SetViewData(TipoNotificacao.Informativa, "Produto já adicionado ao carrinho.");
+                                }
+                            }
+                            else
+                            {
+                                itemCarrinho.CarrinhoId = carrinho.Id;
+                                itemCarrinho.ProdutoId = itemCatalogoViewModel.ProdutoId;
+                                itemCarrinho.ImagemUrl = itemCatalogoViewModel.ImagemUrl;
+                                itemCarrinho.ValorTotal = itemCatalogoViewModel.ValorAtual;
+                                itemCarrinho.Quantidade = itemCatalogoViewModel.Quantidade;
+                                itemCarrinho.ValorReserva = itemCatalogoViewModel.ValorReserva;
 
-                            //carrinho.ItensCarrinho.Add(itemCarrinho);
-                            //carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
-                            //await carrinhoRepository.UpdateAsync(carrinho);
-                            //await AtualizarQuantidadeDisponivel(produto, itemCarrinho.Quantidade);
+                                carrinho.ItensCarrinho.Add(itemCarrinho);
+                                carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
+                                await carrinhoRepository.UpdateAsync(carrinho);
+
+                                SetViewData(TipoNotificacao.Informativa, "Produto adicionado ao carrinho com sucesso.");
+                            }
                         }
                     }
                 }
 
-                return Redirect($"/Default/Catalogo/{(int)Categoria}");
+                return Page();
             }
             catch (Exception ex)
             {
                 SetViewData(TipoNotificacao.Erro, $"Não foi possível incluir o produto no carrinho: {ex.Message}");
-                return Redirect($"/Default/Catalogo/{(int)Categoria}");
+                return Page();
             }
         }
 
@@ -140,22 +162,11 @@ namespace ArteConexao.Pages.Default
             await carrinhoRepository.UpdateAsync(carrinho);
         }
 
-        private async Task AtualizarQuantidadeDisponivel(Produto produto, int quantidadeReservada)
-        {
-            produto.QuantidadeDisponivel -= quantidadeReservada;
-            await produtoRepository.UpdateAsync(produto);
-        }
-
-        private void SetTempData(TipoNotificacao tipoNotificacao, string mensagem)
-        {
-            var notificacao = new NotificacaoViewModel
-            {
-                Tipo = tipoNotificacao,
-                Mensagem = mensagem
-            };
-
-            TempData["Notificacao"] = JsonSerializer.Serialize(notificacao);
-        }
+        //private async Task AtualizarQuantidadeDisponivel(Produto produto, int quantidadeReservada)
+        //{
+        //    produto.QuantidadeDisponivel -= quantidadeReservada;
+        //    await produtoRepository.UpdateAsync(produto);
+        //}
 
         private void SetViewData(TipoNotificacao tipoNotificacao, string mensagem)
         {
@@ -166,6 +177,16 @@ namespace ArteConexao.Pages.Default
             };
 
             ViewData["Notificacao"] = notificacao;
+        }
+
+        private void GetTempData()
+        {
+            var notificaticao = (string)TempData["Notificacao"];
+
+            if (!string.IsNullOrWhiteSpace(notificaticao))
+            {
+                ViewData["Notificacao"] = JsonSerializer.Deserialize<NotificacaoViewModel>(notificaticao.ToString()); ;
+            }
         }
     }
 }

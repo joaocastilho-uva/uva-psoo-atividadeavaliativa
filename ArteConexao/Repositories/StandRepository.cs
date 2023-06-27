@@ -62,5 +62,10 @@ namespace ArteConexao.Repositories
 
             return stand;
         }
+
+        public async Task<Stand> GetByUserAsync(IdentityUser usuario)
+        {
+            return await arteConexaoDbContext.Stands.Where(w => w.Usuarios.Contains(usuario)).FirstOrDefaultAsync();
+        }
     }
 }

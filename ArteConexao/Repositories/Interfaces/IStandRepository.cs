@@ -7,6 +7,7 @@ namespace ArteConexao.Repositories.Interfaces
     {
         Task<Stand> AddAsync(Stand stand);
         Task<Stand> GetAsync(Guid id);
+        Task<Stand> GetByUserAsync(IdentityUser usuario);
         Task<IEnumerable<Stand>> GetAllAsync();
         Task<IEnumerable<Stand>> GetAllAsync(IdentityUser identityUser);
         Task<Stand> UpdateAsync(Stand stand);

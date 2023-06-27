@@ -52,6 +52,8 @@ namespace ArteConexao.Pages.Admin
                     UsuarioAlteracao = produto.UsuarioAlteracao,
                     DataAlteracao = produto.DataAlteracao
                 };
+
+                StandId = produto.StandId;
             }
         }
 

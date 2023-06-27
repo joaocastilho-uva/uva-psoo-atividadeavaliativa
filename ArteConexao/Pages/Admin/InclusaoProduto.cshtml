@@ -25,7 +25,7 @@
     </div>
     <!-- Header fim -->
     <!-- Form início -->
-    <div class="container-xxl py-6">
+    <div class="container-xxl py-3">
         <div class="container">
             <partial name="_Notificacao"></partial>
             <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
@@ -92,7 +92,10 @@
 
                                         @foreach (var categoria in Enum.GetValues(typeof(Categoria)).Cast<Categoria>())
                                         {
-                                            <option>@categoria.ObterDescricao()</option>
+                                            if (categoria != Categoria.Todas)
+                                            {
+                                                <option>@categoria.ObterDescricao()</option>
+                                            }
                                         }
                                     </select>
                                     <label for="sltCategoria">Categoria</label>

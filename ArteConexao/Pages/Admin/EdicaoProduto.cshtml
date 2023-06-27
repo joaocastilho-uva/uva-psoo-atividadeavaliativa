@@ -1,5 +1,9 @@
 ﻿@page "{produtoId:Guid}"
+
 @using ArteConexao.Enums;
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<IdentityUser> userManager
 
 @model ArteConexao.Pages.Admin.EdicaoProdutoModel
 
@@ -24,7 +28,7 @@
     </div>
     <!-- Header fim -->
     <!-- Form início -->
-    <div class="container-xxl py-6">
+    <div class="container-xxl py-3">
         <div class="container">
             <partial name="_Notificacao"></partial>
             <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
@@ -35,7 +39,7 @@
                     <form method="post">
                         <input type="hidden" asp-for="StandId">
                         <div class="col-md-12 mb-3">
-                            <div class="form-floating">
+                            <div class="form-floating mb-3">
                                 <input id="iptId" type="text" class="form-control" asp-for="ProdutoViewModel.Id" placeholder="Id" required readonly>
                                 <label for="iptId">Id</label>
                                 <span class="text-danger" asp-validation-for="ProdutoViewModel.Id"></span>
@@ -50,7 +54,15 @@
                         <div class="row">
                             <div class="col-4 mb-3">
                                 <div class="card">
-                                    <img id="imgImagemDisplay" src="https://dummyimage.com/500x600/000/fff&text=500x600" style="display:block" />
+                                    @if (!string.IsNullOrWhiteSpace(Model.ProdutoViewModel.ImagemUrl))
+                                    {
+                                        <img id="imgImagemDisplay" src="@Model.ProdutoViewModel.ImagemUrl" style="display:block" />
+                                    }
+                                    else
+                                    {
+                                        <img id="imgImagemDisplay" src="https://dummyimage.com/500x600/000/fff&text=500x600" style="display:block" />
+                                    }
+
                                     <div class="card-body">
                                         <input id="iptEscolherImagem" class="mt-2" type="file">
                                     </div>
@@ -82,11 +94,16 @@
                             <div class="col-4 mb-3">
                                 <div class="form-floating">
                                     <select id="sltPaisOrigem" class="form-select">
-                                        <option selected>Selecione um país</option>
-
                                         @foreach (var pais in Enum.GetValues(typeof(Pais)).Cast<Pais>())
                                         {
-                                            <option>@pais.ObterDescricao()</option>
+                                            if (Model.ProdutoViewModel.PaisOrigem == pais)
+                                            {
+                                                <option selected>@pais.ObterDescricao()</option>
+                                            }
+                                            else
+                                            {
+                                                <option>@pais.ObterDescricao()</option>
+                                            }
                                         }
                                     </select>
                                     <label for="sltPaisOrigem">País origem</label>
@@ -95,11 +112,19 @@
                             <div class="col-4 mb-3">
                                 <div class="form-floating">
                                     <select id="sltCategoria" class="form-select">
-                                        <option selected>Selecione uma categoria</option>
-
                                         @foreach (var categoria in Enum.GetValues(typeof(Categoria)).Cast<Categoria>())
                                         {
-                                            <option>@categoria.ObterDescricao()</option>
+                                            if (categoria != Categoria.Todas)
+                                            {
+                                                if (Model.ProdutoViewModel.Categoria == categoria)
+                                                {
+                                                    <option selected>@categoria.ObterDescricao()</option>
+                                                }
+                                                else
+                                                {
+                                                    <option>@categoria.ObterDescricao()</option>
+                                                }
+                                            }
                                         }
                                     </select>
                                     <label for="sltCategoria">Categoria</label>
@@ -142,11 +167,19 @@
                         <div class="row mb-3">
                             <div class="col-8">
                                 <div class="form-floating mb-3">
-                                    <input id="iptUsuarioInclusao" type="text" class="form-control" placeholder="Usuário inclusão" asp-for="ProdutoViewModel.UsuarioInclusao" required disabled>
+                                    <input id="iptUsuarioInclusao" type="text" class="form-control" value="@userManager.FindByIdAsync(Model.ProdutoViewModel.UsuarioInclusao.ToString()).Result.UserName" placeholder="Usuário inclusão" asp-for="ProdutoViewModel.UsuarioInclusao" required disabled>
                                     <label for="iptUsuarioInclusao">Usuário inclusão</label>
                                 </div>
                                 <div class="form-floating mb-3">
-                                    <input id="iptUsuarioAlteracao" type="text" class="form-control" placeholder="Usuário alteração" asp-for="ProdutoViewModel.UsuarioAlteracao" required disabled>
+                                    @if (Model.ProdutoViewModel.UsuarioAlteracao.HasValue)
+                                    {
+                                        <input id="iptUsuarioAlteracao" type="text" class="form-control" value="@userManager.FindByIdAsync(Model.ProdutoViewModel.UsuarioAlteracao.ToString()).Result.UserName" placeholder="Usuário alteração" asp-for="ProdutoViewModel.UsuarioAlteracao" required disabled>
+                                    }
+                                    else
+                                    {
+                                        <input id="iptUsuarioAlteracao" type="text" class="form-control" placeholder="Usuário alteração" asp-for="ProdutoViewModel.UsuarioAlteracao" required disabled>
+                                    }
+
                                     <label for="iptUsuarioAlteracao">Usuário alteração</label>
                                 </div>
                             </div>

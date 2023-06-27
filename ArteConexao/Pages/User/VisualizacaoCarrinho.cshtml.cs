@@ -17,9 +17,7 @@ namespace ArteConexao.Pages.User
         public CarrinhoViewModel CarrinhoViewModel { get; set; }
 
         [BindProperty]
-        public ItemCarrinhoViewModel ItemCarrinhoViewModel { get; set; }
-
-        public List<Produto> Produtos { get; set; }
+        public List<ItemCarrinhoViewModel> ItensCarrinhoViewModel { get; set; }
 
         public VisualizacaoCarrinhoModel(ICarrinhoRepository carrinhoRepository,
             IItemCarrinhoRepository itemCarrinhoRepository,
@@ -29,7 +27,7 @@ namespace ArteConexao.Pages.User
             this.itemCarrinhoRepository = itemCarrinhoRepository;
             this.produtoRepository = produtoRepository;
 
-            Produtos = new List<Produto>();
+            ItensCarrinhoViewModel = new List<ItemCarrinhoViewModel>();
         }
 
         public async Task OnGet(Guid usuarioId)
@@ -43,40 +41,66 @@ namespace ArteConexao.Pages.User
                     Id = carrinho.Id,
                     UsuarioId = carrinho.UsuarioId,
                     ValorTotal = carrinho.ValorTotal,
-                    //ItensCarrinho = carrinho.ItensCarrinho
                 };
 
                 if (carrinho.ItensCarrinho.Any())
                 {
                     foreach (var item in carrinho.ItensCarrinho)
                     {
-                        Produtos.Add(await produtoRepository.GetAsync(item.ProdutoId));
+                        var nome = (await produtoRepository.GetAsync(item.ProdutoId)).Nome;
+
+                        ItensCarrinhoViewModel.Add(new ItemCarrinhoViewModel()
+                        {
+                            Id = item.Id,
+                            ProdutoId = item.ProdutoId,
+                            ImagemUrl = item.ImagemUrl,
+                            Nome = nome,
+                            Quantidade = item.Quantidade,
+                            StandId = item.StandId,
+                            ValorReserva = item.ValorReserva
+                        });
                     }
+
+                    CarrinhoViewModel.ItensCarrinhoViewModel = ItensCarrinhoViewModel;
                 }
+                else
+                {
+                    SetViewData(TipoNotificacao.Informativa, "O carrinho se encontra vazio.");
+                }
+            }
+            else
+            {
+                SetViewData(TipoNotificacao.Informativa, "O carrinho se encontra vazio.");
             }
         }
 
-        public async Task<IActionResult> OnPostDelete(Guid produtoId)
+        public async Task<IActionResult> OnPostDelete(Guid itemCarrinhoId)
         {
             try
             {
                 ValidateOnPostDelete();
 
-                if (CarrinhoViewModel.ItensCarrinhoViewModel.Any())
+                if (itemCarrinhoId != Guid.Empty)
                 {
-                    var itemCarrinhoId = CarrinhoViewModel.ItensCarrinhoViewModel.FirstOrDefault(w => w.ProdutoId == produtoId).ProdutoId;
+                    var excluido = await itemCarrinhoRepository.DeleteAsync(itemCarrinhoId);
 
-                    if (itemCarrinhoId != Guid.Empty)
+                    if (excluido)
                     {
-                        var excluido = await itemCarrinhoRepository.DeleteAsync(itemCarrinhoId);
+                        var carrinhoDb = await carrinhoRepository.GetAsync(CarrinhoViewModel.Id);
 
-                        if (excluido)
+                        if (carrinhoDb.ItensCarrinho.Any())
                         {
-                            var carrinhoDb = await carrinhoRepository.GetAsync(CarrinhoViewModel.Id);
-                            carrinhoDb.ValorTotal += carrinhoDb.ItensCarrinho.ToList().Sum(s => (s.Valor * s.Quantidade));
-
+                            carrinhoDb.ValorTotal += carrinhoDb.ItensCarrinho.ToList().Sum(s => (s.ValorReserva * s.Quantidade));
                             await carrinhoRepository.UpdateAsync(carrinhoDb);
+
                             SetViewData(TipoNotificacao.Sucesso, "Produto removido com sucesso.");
+                        }
+                        else
+                        {
+                            carrinhoDb.ValorTotal = 0;
+                            await carrinhoRepository.UpdateAsync(carrinhoDb);
+
+                            //return RedirectToPage($"/User/VisualizacaoCarrinho/@userManager.GetUserId(User)");
                         }
                     }
                 }
@@ -87,7 +111,7 @@ namespace ArteConexao.Pages.User
             {
                 SetViewData(TipoNotificacao.Erro, $"Não foi possível remover o produto: {ex.Message}.");
 
-                return RedirectToPage("/admin/gerenciamentoproduto");
+                return Page();
             }
         }
 

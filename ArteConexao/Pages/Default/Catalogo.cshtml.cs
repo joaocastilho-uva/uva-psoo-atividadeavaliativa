@@ -83,19 +83,22 @@ namespace ArteConexao.Pages.Default
                                         itemCarrinho.Quantidade += 1;
 
                                         await itemCarrinhoRepository.UpdateAsync(itemCarrinho);
-                                        carrinho.ValorTotal += (itemCarrinho.Valor * itemCarrinho.Quantidade);
+                                        carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
                                     }
                                 }
                                 else
                                 {
                                     itemCarrinho.CarrinhoId = carrinho.Id;
                                     itemCarrinho.ProdutoId = produto.Id;
+                                    itemCarrinho.StandId = produto.StandId;
                                     itemCarrinho.Quantidade = 1;
-                                    itemCarrinho.Valor = (produto.ValorAtual * 0.15m);
+                                    itemCarrinho.ImagemUrl = produto.ImagemUrl;
+                                    itemCarrinho.ValorReserva = (produto.ValorAtual * 0.15m);
 
-                                    carrinho.ItensCarrinho.Add(itemCarrinho);
-                                    carrinho.ValorTotal += (itemCarrinho.Valor * itemCarrinho.Quantidade);
-                                    await carrinhoRepository.UpdateAsync(carrinho);
+                                    await AtualizarCarrinho(carrinho, itemCarrinho, (itemCarrinho.ValorReserva * itemCarrinho.Quantidade));
+                                    //carrinho.ItensCarrinho.Add(itemCarrinho);
+                                    //carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
+                                    //await carrinhoRepository.UpdateAsync(carrinho);
                                 }
                             }
                         }
@@ -105,14 +108,18 @@ namespace ArteConexao.Pages.Default
                             {
                                 CarrinhoId = carrinho.Id,
                                 ProdutoId = produto.Id,
+                                StandId = produto.StandId,
                                 Quantidade = 1,
-                                Valor = (produto.ValorAtual * 0.15m)
+                                ImagemUrl = produto.ImagemUrl,
+                                ValorReserva = (produto.ValorAtual * 0.15m)
                             };
 
-                            carrinho.ItensCarrinho.Add(itemCarrinho);
-                            await carrinhoRepository.UpdateAsync(carrinho);
+                            await AtualizarCarrinho(carrinho, itemCarrinho, (itemCarrinho.ValorReserva * itemCarrinho.Quantidade));
 
-                            await AtualizarQuantidadeDisponivel(produto, itemCarrinho.Quantidade);
+                            //carrinho.ItensCarrinho.Add(itemCarrinho);
+                            //carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
+                            //await carrinhoRepository.UpdateAsync(carrinho);
+                            //await AtualizarQuantidadeDisponivel(produto, itemCarrinho.Quantidade);
                         }
                     }
                 }
@@ -124,6 +131,13 @@ namespace ArteConexao.Pages.Default
                 SetViewData(TipoNotificacao.Erro, $"Não foi possível incluir o produto no carrinho: {ex.Message}");
                 return Redirect($"/Default/Catalogo/{(int)Categoria}");
             }
+        }
+
+        private async Task AtualizarCarrinho(Carrinho carrinho, ItemCarrinho itemCarrinho, decimal valorTotal)
+        {
+            carrinho.ItensCarrinho.Add(itemCarrinho);
+            carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
+            await carrinhoRepository.UpdateAsync(carrinho);
         }
 
         private async Task AtualizarQuantidadeDisponivel(Produto produto, int quantidadeReservada)

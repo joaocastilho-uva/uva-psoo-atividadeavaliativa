@@ -4,6 +4,7 @@ using ArteConexao.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArteConexao.Migrations
 {
     [DbContext(typeof(ArteConexaoDbContext))]
-    partial class ArteConexaoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230627111914_migration-2")]
+    partial class migration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,10 +63,7 @@ namespace ArteConexao.Migrations
                     b.Property<Guid>("StandId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("ValorReserva")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("ValorTotal")
+                    b.Property<decimal>("Valor")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -98,10 +97,7 @@ namespace ArteConexao.Migrations
                     b.Property<Guid>("StandId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal>("ValorReserva")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("ValorTotal")
+                    b.Property<decimal>("Valor")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");

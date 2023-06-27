@@ -78,18 +78,19 @@ namespace ArteConexao.Pages.Default
                                         itemCarrinho.Quantidade += 1;
 
                                         await itemCarrinhoRepository.UpdateAsync(itemCarrinho);
-                                        carrinho.ValorTotal += (itemCarrinho.Valor * itemCarrinho.Quantidade);
+                                        carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
                                     }
                                 }
                                 else
                                 {
                                     itemCarrinho.CarrinhoId = carrinho.Id;
                                     itemCarrinho.ProdutoId = produto.Id;
+                                    itemCarrinho.ImagemUrl = produto.ImagemUrl;
                                     itemCarrinho.Quantidade = 1;
-                                    itemCarrinho.Valor = (produto.ValorAtual * 0.15m);
+                                    itemCarrinho.ValorReserva = (produto.ValorAtual * 0.15m);
 
                                     carrinho.ItensCarrinho.Add(itemCarrinho);
-                                    carrinho.ValorTotal += (itemCarrinho.Valor * itemCarrinho.Quantidade);
+                                    carrinho.ValorTotal += (itemCarrinho.ValorReserva * itemCarrinho.Quantidade);
                                     await carrinhoRepository.UpdateAsync(carrinho);
                                 }
                             }
@@ -100,14 +101,13 @@ namespace ArteConexao.Pages.Default
                             {
                                 CarrinhoId = carrinho.Id,
                                 ProdutoId = produto.Id,
+                                ImagemUrl = produto.ImagemUrl,
                                 Quantidade = 1,
-                                Valor = (produto.ValorAtual * 0.15m)
+                                ValorReserva = (produto.ValorAtual * 0.15m)
                             };
 
                             carrinho.ItensCarrinho.Add(itemCarrinho);
                             await carrinhoRepository.UpdateAsync(carrinho);
-
-                            //await AtualizarQuantidadeDisponivel(produto, itemCarrinho.Quantidade);
                         }
                     }
                 }

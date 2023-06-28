@@ -57,8 +57,7 @@ namespace ArteConexao.Repositories
                     produtoDb.ImagemUrl = produto.ImagemUrl;
                     produtoDb.Categoria = produto.Categoria;
                     produtoDb.PaisOrigem = produto.PaisOrigem;
-                    produtoDb.ValorTotal = produto.ValorTotal;
-                    produtoDb.QuantidadeTotal = produto.QuantidadeTotal;
+                    produtoDb.ValorAtual = produto.ValorAtual;
                     produtoDb.QuantidadeDisponivel = produto.QuantidadeDisponivel;
                     produtoDb.Comprimento = produto.Comprimento;
                     produtoDb.Largura = produto.Largura;

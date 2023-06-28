@@ -37,7 +37,7 @@
             <div class="row g-5 justify-content-center">
                 <div class="wow fadeInUp" data-wow-delay="0.5s">
                     <form method="post">
-                        <input type="hidden" asp-for="StandId">
+                        <input type="hidden" asp-for="ProdutoViewModel.StandId">
                         <div class="col-md-12 mb-3">
                             <div class="form-floating mb-3">
                                 <input id="iptId" type="text" class="form-control" asp-for="ProdutoViewModel.Id" placeholder="Id" required readonly>
@@ -56,7 +56,7 @@
                                 <div class="card">
                                     @if (!string.IsNullOrWhiteSpace(Model.ProdutoViewModel.ImagemUrl))
                                     {
-                                        <img id="imgImagemDisplay" src="@Model.ProdutoViewModel.ImagemUrl" style="display:block" />
+                                        <img id="imgImagemDisplay" src="@Model.ProdutoViewModel.ImagemUrl" style="display:block"/>
                                     }
                                     else
                                     {
@@ -76,7 +76,7 @@
                             </div>
                         </div>
                         <div class="form-floating mb-3">
-                            <input id="iptImagemUrl" class="form-control" type="text" placeholder="Imagem URL" asp-for="ProdutoViewModel.ImagemUrl" required disabled>
+                            <input id="iptImagemUrl" class="form-control" type="text" placeholder="Imagem URL" asp-for="ProdutoViewModel.ImagemUrl" required readonly>
                             <label for="iptImagemUrl">Imagem URL</label>
                             <span class="text-danger" asp-validation-for="ProdutoViewModel.ImagemUrl"></span>
                         </div>
@@ -86,14 +86,14 @@
                         <div class="row">
                             <div class="col-4 mb-3">
                                 <div class="form-floating">
-                                    <input id="iptValorTotal" class="form-control" type="text" placeholder="Valor" asp-for="ProdutoViewModel.ValorTotal" required>
+                                    <input id="iptValorTotal" class="form-control" type="text" placeholder="Valor" asp-for="ProdutoViewModel.ValorAtual" required>
                                     <label for="iptValorTotal">Valor</label>
-                                    <span class="text-danger" asp-validation-for="ProdutoViewModel.ValorTotal"></span>
+                                    <span class="text-danger" asp-validation-for="ProdutoViewModel.ValorAtual"></span>
                                 </div>
                             </div>
                             <div class="col-4 mb-3">
                                 <div class="form-floating">
-                                    <select id="sltPaisOrigem" class="form-select">
+                                    <select id="sltPaisOrigem" class="form-select" asp-for="ProdutoViewModel.PaisOrigem">
                                         @foreach (var pais in Enum.GetValues(typeof(Pais)).Cast<Pais>())
                                         {
                                             if (Model.ProdutoViewModel.PaisOrigem == pais)
@@ -111,7 +111,7 @@
                             </div>
                             <div class="col-4 mb-3">
                                 <div class="form-floating">
-                                    <select id="sltCategoria" class="form-select">
+                                    <select id="sltCategoria" class="form-select" asp-for="ProdutoViewModel.Categoria">
                                         @foreach (var categoria in Enum.GetValues(typeof(Categoria)).Cast<Categoria>())
                                         {
                                             if (categoria != Categoria.Todas)
@@ -134,9 +134,9 @@
                         <div class="row">
                             <div class="col-4">
                                 <div class="form-floating mb-3">
-                                    <input id="iptQantidade" type="text" class="form-control" placeholder="Quantidade" asp-for="ProdutoViewModel.QuantidadeTotal" required>
+                                    <input id="iptQantidade" type="text" class="form-control" placeholder="Quantidade" asp-for="ProdutoViewModel.QuantidadeDisponivel" required>
                                     <label for="iptQantidade">Quantidade</label>
-                                    <span class="text-danger" asp-validation-for="ProdutoViewModel.QuantidadeTotal"></span>
+                                    <span class="text-danger" asp-validation-for="ProdutoViewModel.QuantidadeDisponivel"></span>
                                 </div>
                             </div>
                             <div class="col">
@@ -195,7 +195,7 @@
                             </div>
                         </div>
                         <div class="col-md-12 text-center">
-                            <button id="btnCadastrar" class="btn btn-primary rounded-pill py-3 px-5" type="submit">Cadastrar</button>
+                            <button id="btnSalvar" class="btn btn-primary rounded-pill py-3 px-5" type="submit">Salvar</button>
                             <a id="btnCancelar" class="btn btn-danger rounded-pill py-3 px-5" href="/admin/gerenciamentoproduto/@Model.StandId" role="button">Cancelar</a>
                         </div>
                     </form>

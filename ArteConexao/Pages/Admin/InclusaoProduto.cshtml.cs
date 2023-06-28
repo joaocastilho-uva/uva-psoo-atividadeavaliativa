@@ -50,6 +50,7 @@ namespace ArteConexao.Pages.Admin
                     Categoria = ProdutoViewModel.Categoria,
                     ValorTotal = ProdutoViewModel.ValorTotal,
                     ValorAtual = ProdutoViewModel.ValorTotal,
+                    ValorReserva = (ProdutoViewModel.ValorTotal * 0.10m),
                     QuantidadeTotal = ProdutoViewModel.QuantidadeTotal,
                     QuantidadeDisponivel = ProdutoViewModel.QuantidadeTotal,
                     Comprimento = ProdutoViewModel.Comprimento,
@@ -71,7 +72,7 @@ namespace ArteConexao.Pages.Admin
                 }
 
                 SetTempData(TipoNotificacao.Sucesso, "Produto cadastrado com sucesso.");
-                return Redirect($"/admin/gerenciamentoproduto/{StandId}");
+                return Redirect($"/Admin/GerenciamentoProduto/{StandId}");
             }
 
             return Page();

@@ -15,8 +15,10 @@ namespace ArteConexao.ViewModels
         public decimal Largura { get; set; }
         public decimal Altura { get; set; }
         public int QuantidadeTotal { get; set; }
+        public int QuantidadeDisponivel { get; set; }
         public decimal ValorTotal { get; set; }
         public decimal ValorReserva { get; set; }
+        public decimal ValorAtual { get; set; }
         public Guid? UsuarioInclusao { get; set; }
         public DateTime? DataInclusao { get; set; }
         public Guid? UsuarioAlteracao { get; set; }

@@ -33,7 +33,7 @@ namespace ArteConexao.Pages.Admin
                     PaisOrigem = produto.PaisOrigem,
                     Categoria = produto.Categoria,
                     StandId = produto.StandId,
-                    ValorTotal = produto.ValorTotal,
+                    ValorAtual = produto.ValorAtual,
                     QuantidadeTotal = produto.QuantidadeTotal,
                     Comprimento = produto.Comprimento,
                     Largura = produto.Largura,

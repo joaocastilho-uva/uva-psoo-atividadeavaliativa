@@ -41,7 +41,7 @@ namespace ArteConexao.Pages.Admin
                     ImagemUrl = produto.ImagemUrl,
                     Categoria = produto.Categoria,
                     PaisOrigem = produto.PaisOrigem,
-                    ValorTotal = produto.ValorAtual,
+                    ValorAtual = produto.ValorAtual,
                     StandId = produto.StandId,
                     QuantidadeTotal = produto.QuantidadeTotal,
                     Comprimento = produto.Comprimento,
@@ -76,8 +76,8 @@ namespace ArteConexao.Pages.Admin
                         Comprimento = ProdutoViewModel.Comprimento,
                         Largura = ProdutoViewModel.Largura,
                         Altura = ProdutoViewModel.Altura,
-                        QuantidadeTotal = ProdutoViewModel.QuantidadeTotal,
-                        ValorAtual = ProdutoViewModel.ValorTotal,
+                        QuantidadeDisponivel = ProdutoViewModel.QuantidadeDisponivel,
+                        ValorAtual = ProdutoViewModel.ValorAtual,
                         UsuarioAlteracao = new Guid(userManager.GetUserId(User)),
                         DataAlteracao = DateTime.Now
                     };
@@ -86,7 +86,7 @@ namespace ArteConexao.Pages.Admin
 
                     SetTempData(TipoNotificacao.Sucesso, "Produto atualizado com sucesso.");
 
-                    return Redirect($"/admin/gerenciamentoproduto/{ProdutoViewModel.StandId}");
+                    return Redirect($"/Admin/GerenciamentoProduto/{ProdutoViewModel.StandId}");
                 }
 
                 return Page();

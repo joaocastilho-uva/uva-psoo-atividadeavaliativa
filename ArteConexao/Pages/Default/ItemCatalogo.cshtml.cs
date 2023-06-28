@@ -56,6 +56,7 @@ namespace ArteConexao.Pages.Default
                         QuantidadeDisponivel = produtoDb.QuantidadeDisponivel,
                         Comprimento = produtoDb.Comprimento,
                         Largura = produtoDb.Largura,
+                        StandId = produtoDb.StandId,
                         Altura = produtoDb.Altura,
                         ValorAtual = produtoDb.ValorAtual,
                         ValorReserva = produtoDb.ValorReserva
@@ -97,6 +98,7 @@ namespace ArteConexao.Pages.Default
                                 itemCarrinho.CarrinhoId = carrinho.Id;
                                 itemCarrinho.ProdutoId = ItemCatalogoViewModel.ProdutoId;
                                 itemCarrinho.ImagemUrl = ItemCatalogoViewModel.ImagemUrl;
+                                itemCarrinho.StandId = ItemCatalogoViewModel.StandId;
                                 itemCarrinho.ValorTotal = ItemCatalogoViewModel.ValorAtual;
                                 itemCarrinho.Quantidade = ItemCatalogoViewModel.Quantidade;
                                 itemCarrinho.ValorReserva = ItemCatalogoViewModel.ValorReserva;
@@ -126,6 +128,7 @@ namespace ArteConexao.Pages.Default
                                 itemCarrinho.CarrinhoId = carrinho.Id;
                                 itemCarrinho.ProdutoId = ItemCatalogoViewModel.ProdutoId;
                                 itemCarrinho.ImagemUrl = ItemCatalogoViewModel.ImagemUrl;
+                                itemCarrinho.StandId = ItemCatalogoViewModel.StandId;
                                 itemCarrinho.ValorTotal = ItemCatalogoViewModel.ValorAtual;
                                 itemCarrinho.Quantidade = ItemCatalogoViewModel.Quantidade;
                                 itemCarrinho.ValorReserva = ItemCatalogoViewModel.ValorReserva;

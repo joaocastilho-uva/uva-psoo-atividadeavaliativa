@@ -40,6 +40,7 @@ builder.Services.AddScoped<IStandRepository, StandRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IReservaRepository, ReservaRepository>();
 builder.Services.AddScoped<IItemCarrinhoRepository, ItemCarrinhoRepository>();
+builder.Services.AddScoped<IItemReservaRepository, ItemReservaRepository>();
 
 builder.Services.AddTransient<CarrinhoRepository>();
 

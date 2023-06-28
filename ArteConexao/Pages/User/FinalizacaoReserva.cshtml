@@ -1,41 +1,42 @@
 ﻿@page
 
 @model ArteConexao.Pages.User.FinalizacaoReservaModel
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<IdentityUser> userManager
 
 @{
-    ViewData["Title"] = "Finalização";
+    ViewData["Title"] = "Finalização reserva";
 }
 
 <body>
     <!-- Header início -->
     <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
         <div class="container">
-            <h1 class="display-3 mb-3 animated slideInDown">...</h1>
+            <h1 class="display-3 mb-3 animated slideInDown">Finalização reserva</h1>
             <nav aria-label="breadcrumb animated slideInDown">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
                     <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
-                    <li class="breadcrumb-item"><a class="text-body" href="#">Admin</a></li>
-                    <li class="breadcrumb-item text-dark active" aria-current="page">...</li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">User</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Finalização reserva</li>
                 </ol>
             </nav>
         </div>
     </div>
     <!-- Header fim -->
-    <!-- ... início -->
-    <div class="container-xxl py-3">
-        <div class="container">
-            <partial name="_Notificacao"></partial>
-
-            <div class="section-header text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
-                <h1 class="display-5 mb-3">...</h1>
-            </div>
-
-            <div class="row g-5 justify-content-center">
-                <div class="col-lg-7 col-md-12 wow fadeInUp" data-wow-delay="0.5s">
+    <!-- Mensagem finalização início -->
+    <div class="container-xxl py-6 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <i class="bi bi-stars display-1 text-primary"></i>
+                    <h1 class="display-1">Reserva</h1>
+                    <h1 class="mb-4">realizada com sucesso!</h1>
+                    <a class="btn btn-primary rounded-pill py-3 px-5" role="button" href="/User/AcompanhamentoReserva/@userManager.GetUserId(User)">Ver reservas</a>
                 </div>
             </div>
         </div>
     </div>
-    <!-- ... fim -->
+    <!-- Mensagem finalização fim -->
 </body>

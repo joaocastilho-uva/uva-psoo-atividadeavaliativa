@@ -87,6 +87,7 @@
                                                 <input type="hidden" asp-for="ItensCatalogoViewModel[i].ValorAtual" value="@Model.ItensCatalogoViewModel[i].ValorAtual">
                                                 <input type="hidden" asp-for="ItensCatalogoViewModel[i].ValorReserva" value="@Model.ItensCatalogoViewModel[i].ValorReserva">
                                                 <input type="hidden" asp-for="ItensCatalogoViewModel[i].QuantidadeDisponivel" value="@Model.ItensCatalogoViewModel[i].QuantidadeDisponivel">
+                                                <input type="hidden" asp-for="ItensCatalogoViewModel[i].StandId" value="@Model.ItensCatalogoViewModel[i].StandId">
                                                 <small class="w-50 text-center py-2">
                                                     <button type="submit" class="btn text-body" asp-page-handler="reserva" name="produtoId" value="@Model.ItensCatalogoViewModel[i].ProdutoId" title="Incluir carrinho">
                                                         <i class="fa fa-shopping-bag text-primary me-2"></i>

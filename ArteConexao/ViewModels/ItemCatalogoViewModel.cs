@@ -6,6 +6,7 @@ namespace ArteConexao.ViewModels
     {
         public Guid ProdutoId { get; set; }
         public Guid CarrinhoId { get; set; }
+        public Guid StandId { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public Pais PaisOrigem { get; set; }

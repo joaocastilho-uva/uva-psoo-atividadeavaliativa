@@ -7,7 +7,6 @@ namespace ArteConexao.Repositories.Interfaces
     {
         Task<Reserva> AddAsync(Reserva reserva);
         Task<Reserva> GetAsync(Guid id);
-        //Task<IEnumerable<Reserva>> GetAllAsync(Stand stand);
         Task<IEnumerable<Reserva>> GetAllAsync(IdentityUser identityUser);
         Task<Reserva> UpdateAsync(Reserva reserva);
     }

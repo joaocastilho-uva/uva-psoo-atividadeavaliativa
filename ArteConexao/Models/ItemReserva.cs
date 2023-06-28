@@ -1,4 +1,6 @@
-﻿namespace ArteConexao.Models
+﻿using ArteConexao.Enums;
+
+namespace ArteConexao.Models
 {
     public class ItemReserva
     {
@@ -6,9 +8,8 @@
         public Guid ProdutoId { get; set; }
         public Guid ReservaId { get; set; }
         public Guid StandId { get; set; }
-        public string ImagemUrl { get; set; }
+        public StatusItemReserva Status { get; set; }
         public int Quantidade { get; set; }
-        public decimal ValorTotal { get; set; }
         public decimal ValorReserva { get; set; }
     }
 }

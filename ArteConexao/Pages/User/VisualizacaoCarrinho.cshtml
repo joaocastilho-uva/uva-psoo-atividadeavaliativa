@@ -60,9 +60,10 @@
                                                                 <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].Id" asp-for="ItensCarrinhoViewModel[i].Id">
                                                                 <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].ProdutoId" asp-for="ItensCarrinhoViewModel[i].ProdutoId">
                                                                 <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].StandId" asp-for="ItensCarrinhoViewModel[i].StandId">
-                                                                <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].ImagemUrl" asp-for="ItensCarrinhoViewModel[i].ImagemUrl">
                                                                 <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].ValorReserva" asp-for="ItensCarrinhoViewModel[i].ValorReserva">
                                                                 <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].ValorTotal" asp-for="ItensCarrinhoViewModel[i].ValorTotal">
+                                                                <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].ImagemUrl" asp-for="ItensCarrinhoViewModel[i].ImagemUrl">
+                                                                <input type="hidden" value="@Model.CarrinhoId" asp-for="CarrinhoId">
 
                                                                 <div class="row mb-4 d-flex justify-content-between align-items-center">
                                                                     <div class="col-md-2 col-lg-2 col-xl-2">
@@ -73,11 +74,11 @@
                                                                         <h6 class="text-black mb-0">@Model.ItensCarrinhoViewModel[i].Nome</h6>
                                                                     </div>
                                                                     <div class="form-floating col-md-3 col-lg-3 col-xl-3">
-                                                                        <input type="number" id="iptQuantidade" class="form-control input-number" asp-for="ItensCarrinhoViewModel[i].Quantidade" value="1" min="1" max="100" required>
+                                                                        <input type="number" id="iptQuantidade" class="form-control input-number" asp-for="ItensCarrinhoViewModel[i].Quantidade" min="1" required>
                                                                         <label for="iptQuantidade">Quantidade</label>
                                                                     </div>
                                                                     <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                                                        <h6 class="mb-0">R$ @(Model.ItensCarrinhoViewModel[i].ValorReserva)</h6>
+                                                                        <h6 id="valorReserva" class="mb-0">R$ @(Model.ItensCarrinhoViewModel[i].ValorReserva)</h6>
                                                                     </div>
                                                                     <div class="col-md-1 col-lg-1 col-xl-1 text-end">
                                                                         <button type="submit" class="btn" asp-page-handler="delete" name="itemCarrinhoId" value="@Model.ItensCarrinhoViewModel[i].Id" title="Remover">
@@ -129,7 +130,7 @@
                                                         <hr class="my-4">
                                                         <div class="d-flex justify-content-between mb-5">
                                                             <h5>Valor total</h5>
-                                                            <h5>R$ @Model.ItensCarrinhoViewModel.Sum(s => (s.ValorReserva))</h5>
+                                                            <h5 id="valorTotal">R$ @Model.ItensCarrinhoViewModel.Sum(s => (s.ValorReserva * s.Quantidade))</h5>
                                                         </div>
                                                         <button id="btnFinalizar" class="btn btn-primary rounded-pill py-3 px-5" type="submit">Finalizar</button>
                                                     </div>
@@ -168,7 +169,6 @@
                     $('#iptQuantidade').val(quantity - 1);
                 }
             });
-
         });
     </script>
 }

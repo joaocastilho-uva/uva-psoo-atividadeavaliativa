@@ -59,6 +59,7 @@ namespace ArteConexao.Pages.Default
                             QuantidadeDisponivel = produtoDb.QuantidadeDisponivel,
                             Comprimento = produtoDb.Comprimento,
                             Largura = produtoDb.Largura,
+                            StandId = produtoDb.StandId,
                             Altura = produtoDb.Altura,
                             ValorTotal = produtoDb.ValorTotal,
                             ValorAtual = produtoDb.ValorAtual,
@@ -101,9 +102,10 @@ namespace ArteConexao.Pages.Default
                                 var itemCarrinho = new ItemCarrinho();
 
                                 itemCarrinho.CarrinhoId = carrinho.Id;
+                                itemCarrinho.StandId = itemCatalogoViewModel.StandId;
                                 itemCarrinho.ProdutoId = itemCatalogoViewModel.ProdutoId;
                                 itemCarrinho.ImagemUrl = itemCatalogoViewModel.ImagemUrl;
-                                itemCarrinho.Quantidade = itemCatalogoViewModel.Quantidade;
+                                itemCarrinho.Quantidade = 1;
                                 itemCarrinho.ValorTotal = itemCatalogoViewModel.ValorAtual;
                                 itemCarrinho.ValorReserva = itemCatalogoViewModel.ValorReserva;
 
@@ -130,10 +132,11 @@ namespace ArteConexao.Pages.Default
                             else
                             {
                                 itemCarrinho.CarrinhoId = carrinho.Id;
+                                itemCarrinho.StandId = itemCatalogoViewModel.StandId;
                                 itemCarrinho.ProdutoId = itemCatalogoViewModel.ProdutoId;
                                 itemCarrinho.ImagemUrl = itemCatalogoViewModel.ImagemUrl;
+                                itemCarrinho.Quantidade = 1;
                                 itemCarrinho.ValorTotal = itemCatalogoViewModel.ValorAtual;
-                                itemCarrinho.Quantidade = itemCatalogoViewModel.Quantidade;
                                 itemCarrinho.ValorReserva = itemCatalogoViewModel.ValorReserva;
 
                                 carrinho.ItensCarrinho.Add(itemCarrinho);

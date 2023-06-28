@@ -14,6 +14,7 @@ namespace ArteConexao.Pages.User
         private readonly ICarrinhoRepository carrinhoRepository;
         private readonly IItemCarrinhoRepository itemCarrinhoRepository;
         private readonly IProdutoRepository produtoRepository;
+        private readonly IReservaRepository reservaRepository;
         private readonly UserManager<IdentityUser> userManager;
 
         [BindProperty]
@@ -22,26 +23,32 @@ namespace ArteConexao.Pages.User
         [BindProperty]
         public List<ItemCarrinhoViewModel> ItensCarrinhoViewModel { get; set; }
 
+        [BindProperty]
+        public Guid CarrinhoId { get; set; }
+
         public VisualizacaoCarrinhoModel(ICarrinhoRepository carrinhoRepository,
             IItemCarrinhoRepository itemCarrinhoRepository,
             IProdutoRepository produtoRepository,
+            IReservaRepository reservaRepository,
             UserManager<IdentityUser> userManager)
         {
             this.carrinhoRepository = carrinhoRepository;
             this.itemCarrinhoRepository = itemCarrinhoRepository;
             this.produtoRepository = produtoRepository;
+            this.reservaRepository = reservaRepository;
             this.userManager = userManager;
+
             ItensCarrinhoViewModel = new List<ItemCarrinhoViewModel>();
         }
 
         public async Task OnGet(Guid usuarioId)
         {
-            GetTempData();
-
             var carrinho = await carrinhoRepository.GetAsync(usuarioId);
 
             if (carrinho != null)
             {
+                CarrinhoId = carrinho.Id;
+
                 CarrinhoViewModel = new CarrinhoViewModel()
                 {
                     Id = carrinho.Id,
@@ -59,10 +66,10 @@ namespace ArteConexao.Pages.User
                         {
                             Id = item.Id,
                             ProdutoId = item.ProdutoId,
-                            ImagemUrl = item.ImagemUrl,
-                            Nome = nome,
-                            Quantidade = item.Quantidade,
                             StandId = item.StandId,
+                            Nome = nome,
+                            ImagemUrl = item.ImagemUrl,
+                            Quantidade = item.Quantidade,
                             ValorReserva = item.ValorReserva
                         });
                     }
@@ -77,6 +84,53 @@ namespace ArteConexao.Pages.User
             else
             {
                 SetViewData(TipoNotificacao.Informativa, "O carrinho se encontra vazio.");
+            }
+        }
+
+        public async Task<IActionResult> OnPost()
+        {
+            try
+            {
+                if (ItensCarrinhoViewModel.Any())
+                {
+                    var reserva = new Reserva()
+                    {
+                        DataInclusao = DateTime.Now,
+                        UsuarioId = new Guid(userManager.GetUserId(User)),
+                        ValorTotal = ItensCarrinhoViewModel.Sum(s => s.Quantidade * s.ValorReserva)
+                    };
+
+                    await reservaRepository.AddAsync(reserva);
+
+                    if (reserva != null && reserva.Id != Guid.Empty)
+                    {
+                        foreach (var itemCarrinhoViewModel in ItensCarrinhoViewModel)
+                        {
+                            var itemReserva = new ItemReserva()
+                            {
+                                ReservaId = reserva.Id,
+                                StandId = itemCarrinhoViewModel.StandId,
+                                ProdutoId = itemCarrinhoViewModel.ProdutoId,
+                                Quantidade = itemCarrinhoViewModel.Quantidade,
+                                Status = StatusItemReserva.Processada,
+                                ValorReserva = itemCarrinhoViewModel.ValorReserva
+                            };
+
+                            reserva.ItensReserva.Add(itemReserva);
+                        }
+
+                        await reservaRepository.UpdateAsync(reserva);
+                        await carrinhoRepository.DeleteAsync(CarrinhoId);
+                        return RedirectToPage("/User/FinalizacaoReserva");
+                    }
+                }
+
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                SetViewData(TipoNotificacao.Erro, $"Não foi possível finalizar a reserva: {ex.Message}");
+                return Page();
             }
         }
 
@@ -99,13 +153,12 @@ namespace ArteConexao.Pages.User
                             carrinhoDb.ValorTotal = carrinhoDb.ItensCarrinho.ToList().Sum(s => (s.ValorReserva * s.Quantidade));
                             await carrinhoRepository.UpdateAsync(carrinhoDb);
 
-                            SetTempData(TipoNotificacao.Sucesso, "Produto removido com sucesso.");
+                            SetViewData(TipoNotificacao.Informativa, "Produto removido com sucesso.");
                         }
                         else
                         {
-                            carrinhoDb.ValorTotal = 0;
-                            await carrinhoRepository.UpdateAsync(carrinhoDb);
-
+                            await carrinhoRepository.DeleteAsync(carrinhoDb.Id);
+                            SetViewData(TipoNotificacao.Informativa, "O carrinho se encontra vazio.");
                             return Redirect($"/User/VisualizacaoCarrinho/{@userManager.GetUserId(User)}");
                         }
                     }

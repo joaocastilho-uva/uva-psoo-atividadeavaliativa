@@ -1,6 +1,4 @@
-﻿using ArteConexao.Enums;
-
-namespace ArteConexao.Models
+﻿namespace ArteConexao.Models
 {
     public class Reserva
     {
@@ -11,7 +9,6 @@ namespace ArteConexao.Models
 
         public Guid Id { get; set; }
         public decimal ValorTotal { get; set; }
-        public StatusReserva Status { get; set; }
         public Guid UsuarioId { get; set; }
         public DateTime DataInclusao { get; set; }
         public ICollection<ItemReserva> ItensReserva { get; set; }

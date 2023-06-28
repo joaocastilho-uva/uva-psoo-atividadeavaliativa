@@ -15,14 +15,16 @@ namespace ArteConexao.Repositories
             this.arteConexaoDbContext = arteConexaoDbContext;
         }
 
-        public Task<Reserva> AddAsync(Reserva reserva)
+        public async Task<Reserva> AddAsync(Reserva reserva)
         {
-            throw new NotImplementedException();
+            await arteConexaoDbContext.Reservas.AddAsync(reserva);
+            await arteConexaoDbContext.SaveChangesAsync();
+            return reserva;
         }
 
-        public Task<Reserva> GetAsync(Guid id)
+        public async Task<Reserva> GetAsync(Guid reservaId)
         {
-            throw new NotImplementedException();
+            return await arteConexaoDbContext.Reservas.Include(nameof(Reserva.ItensReserva)).FirstOrDefaultAsync(x => x.Id == reservaId);
         }
 
         //public async Task<IEnumerable<Reserva>> GetAllAsync(Stand stand)
@@ -35,9 +37,23 @@ namespace ArteConexao.Repositories
             return await arteConexaoDbContext.Reservas.Include(nameof(Reserva.ItensReserva)).Where(w => w.UsuarioId == new Guid(identityUser.Id)).ToListAsync();
         }
 
-        public Task<Reserva> UpdateAsync(Reserva stand)
+        public async Task<Reserva> UpdateAsync(Reserva reserva)
         {
-            throw new NotImplementedException();
+            var reservaDb = await arteConexaoDbContext.Reservas.FirstOrDefaultAsync(x => x.Id == reserva.Id);
+
+            if (reservaDb == null)
+            {
+                if (reservaDb.ItensReserva.Any())
+                {
+                    arteConexaoDbContext.ItensReserva.RemoveRange(reservaDb.ItensReserva);
+
+                    reservaDb.ItensReserva.ToList().ForEach(x => x.ReservaId = reservaDb.Id);
+                    await arteConexaoDbContext.ItensReserva.AddRangeAsync(reservaDb.ItensReserva);
+                }
+            }
+
+            await arteConexaoDbContext.SaveChangesAsync();
+            return reservaDb;
         }
     }
 }

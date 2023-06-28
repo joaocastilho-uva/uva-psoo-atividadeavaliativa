@@ -93,7 +93,7 @@ namespace ArteConexao.Pages.Admin
 
         private void ValidateOnPostDelete()
         {
-            throw new NotImplementedException();
+            
         }
 
         private void GetTempData()

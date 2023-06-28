@@ -56,6 +56,10 @@ namespace ArteConexao.Pages.Admin
                     });
                 }
             }
+            else
+            {
+                SetViewData(TipoNotificacao.Informativa, "Não foram encontradas reservas cadastradas.");
+            }
         }
 
         public async Task<IActionResult> OnPostProcessamento(Guid itemReservaId)
@@ -112,6 +116,17 @@ namespace ArteConexao.Pages.Admin
             {
                 ViewData["Notificacao"] = JsonSerializer.Deserialize<NotificacaoViewModel>(notificaticao.ToString()); ;
             }
+        }
+
+        private void SetViewData(TipoNotificacao tipoNotificacao, string mensagem)
+        {
+            var notificacao = new NotificacaoViewModel
+            {
+                Tipo = tipoNotificacao,
+                Mensagem = mensagem
+            };
+
+            ViewData["Notificacao"] = notificacao;
         }
     }
 }

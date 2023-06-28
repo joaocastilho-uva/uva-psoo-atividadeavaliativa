@@ -34,7 +34,7 @@ namespace ArteConexao.Pages.Admin
                     Categoria = produto.Categoria,
                     StandId = produto.StandId,
                     ValorAtual = produto.ValorAtual,
-                    QuantidadeTotal = produto.QuantidadeTotal,
+                    QuantidadeDisponivel = produto.QuantidadeDisponivel,
                     Comprimento = produto.Comprimento,
                     Largura = produto.Largura,
                     Altura = produto.Altura,

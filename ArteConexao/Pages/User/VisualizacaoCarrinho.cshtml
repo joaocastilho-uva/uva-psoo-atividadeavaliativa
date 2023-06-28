@@ -110,7 +110,7 @@
                                                         </div>
                                                         <div class="mb-4 pb-2">
                                                             <div class="form-floating">
-                                                                <select id="sltMeioPagamento" class="form-select">
+                                                                <select id="sltMeioPagamento" class="form-select" asp-for="MeioPagamento">
                                                                     <option selected>Selecione um meio de pagamento</option>
 
                                                                     @foreach (var pais in Enum.GetValues(typeof(MeioPagamento)).Cast<MeioPagamento>())

@@ -26,6 +26,9 @@ namespace ArteConexao.Pages.User
         [BindProperty]
         public Guid CarrinhoId { get; set; }
 
+        [BindProperty]
+        public MeioPagamento MeioPagamento { get; set; }
+
         public VisualizacaoCarrinhoModel(ICarrinhoRepository carrinhoRepository,
             IItemCarrinhoRepository itemCarrinhoRepository,
             IProdutoRepository produtoRepository,
@@ -91,6 +94,8 @@ namespace ArteConexao.Pages.User
         {
             try
             {
+                ValidateOnPost();
+
                 if (ItensCarrinhoViewModel.Any())
                 {
                     var reserva = new Reserva()
@@ -106,6 +111,8 @@ namespace ArteConexao.Pages.User
                     {
                         foreach (var itemCarrinhoViewModel in ItensCarrinhoViewModel)
                         {
+                            await ValidarQuantidadeDisponivel(itemCarrinhoViewModel.ProdutoId, itemCarrinhoViewModel.Quantidade);
+
                             var itemReserva = new ItemReserva()
                             {
                                 ReservaId = reserva.Id,
@@ -129,8 +136,29 @@ namespace ArteConexao.Pages.User
             }
             catch (Exception ex)
             {
-                SetViewData(TipoNotificacao.Erro, $"Não foi possível finalizar a reserva: {ex.Message}");
+                SetViewData(TipoNotificacao.Erro, $"Não foi possível confirmar a reserva: {ex.Message}");
                 return Page();
+            }
+        }
+
+        private void ValidateOnPost()
+        {
+            if (MeioPagamento != MeioPagamento.Pix || MeioPagamento != MeioPagamento.Cartao)
+            {
+                throw new Exception("O campo meio de pagamento é obrigatório.");
+            }
+        }
+
+        private async Task ValidarQuantidadeDisponivel(Guid produtoId, int quantidadeDesejada)
+        {
+            var produtoDb = await produtoRepository.GetAsync(produtoId);
+
+            if (produtoDb != null)
+            {
+                if (produtoDb.QuantidadeDisponivel < quantidadeDesejada)
+                {
+                    throw new Exception($"O produto {produtoDb.Nome} possui apenas {produtoDb.QuantidadeDisponivel} unidades em estoque.");
+                }
             }
         }
 

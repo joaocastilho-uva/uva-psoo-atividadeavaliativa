@@ -5,7 +5,8 @@ namespace ArteConexao.Repositories.Interfaces
 {
     public interface IItemReservaRepository
     {
-        Task<ItemReserva> GetAsync(Guid id);
-        Task<IEnumerable<ItemReserva>> GetAllAsync(IdentityUser identityUser);
+        Task<ItemReserva> GetAsync(Guid itemReservaId);
+        Task<IEnumerable<ItemReserva>> GetAllAsync(Guid standId);
+        Task<ItemReserva> UpdateAsync(ItemReserva itemReserva);
     }
 }

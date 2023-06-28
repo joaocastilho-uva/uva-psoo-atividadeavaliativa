@@ -18,6 +18,15 @@ namespace ArteConexao.Pages.Admin
         [BindProperty]
         public Guid StandId { get; set; }
 
+        [BindProperty]
+        public ProdutoViewModel ProdutoViewModel { get; set; }
+
+        [BindProperty]
+        public string Categoria { get; set; }
+
+        [BindProperty]
+        public string PaisOrigem { get; set; }
+
         public InclusaoProdutoModel(IProdutoRepository produtoRepository,
             UserManager<IdentityUser> userManager,
             IStandRepository standRepository)
@@ -26,9 +35,6 @@ namespace ArteConexao.Pages.Admin
             this.userManager = userManager;
             this.standRepository = standRepository;
         }
-
-        [BindProperty]
-        public ProdutoViewModel ProdutoViewModel { get; set; }
 
         public void OnGet(Guid standId)
         {
@@ -46,8 +52,8 @@ namespace ArteConexao.Pages.Admin
                     Nome = ProdutoViewModel.Nome,
                     Descricao = ProdutoViewModel.Descricao,
                     ImagemUrl = ProdutoViewModel.ImagemUrl,
-                    PaisOrigem = ProdutoViewModel.PaisOrigem,
-                    Categoria = ProdutoViewModel.Categoria,
+                    PaisOrigem = Enum.GetValues(typeof(Pais)).Cast<Pais>().FirstOrDefault(v => v.ObterDescricao() == PaisOrigem),
+                    Categoria = Enum.GetValues(typeof(Categoria)).Cast<Categoria>().FirstOrDefault(v => v.ObterDescricao() == Categoria),
                     ValorTotal = ProdutoViewModel.ValorTotal,
                     ValorAtual = ProdutoViewModel.ValorTotal,
                     ValorReserva = (ProdutoViewModel.ValorTotal * 0.10m),
@@ -73,6 +79,10 @@ namespace ArteConexao.Pages.Admin
 
                 SetTempData(TipoNotificacao.Sucesso, "Produto cadastrado com sucesso.");
                 return Redirect($"/Admin/GerenciamentoProduto/{StandId}");
+            }
+            else
+            {
+                SetViewData(TipoNotificacao.Erro, $"Não foi possível cadastrar o produto: <br />{string.Join("<br />", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage))}");
             }
 
             return Page();

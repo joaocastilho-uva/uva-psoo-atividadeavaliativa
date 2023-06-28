@@ -74,7 +74,7 @@
                             </div>
                             <div class="col-4 mb-3">
                                 <div class="form-floating">
-                                    <select id="sltPaisOrigem" class="form-select" asp-for="ProdutoViewModel.PaisOrigem">
+                                    <select id="sltPaisOrigem" class="form-select" asp-for="PaisOrigem">
                                         <option selected>Selecione um país</option>
 
                                         @foreach (var pais in Enum.GetValues(typeof(Pais)).Cast<Pais>())
@@ -87,7 +87,7 @@
                             </div>
                             <div class="col-4 mb-3">
                                 <div class="form-floating">
-                                    <select id="sltCategoria" class="form-select" asp-for="ProdutoViewModel.Categoria">
+                                    <select id="sltCategoria" class="form-select" asp-for="Categoria">
                                         <option selected>Selecione uma categoria</option>
 
                                         @foreach (var categoria in Enum.GetValues(typeof(Categoria)).Cast<Categoria>())

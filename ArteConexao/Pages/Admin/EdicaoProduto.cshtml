@@ -44,7 +44,6 @@
                                 <label for="iptId">Id</label>
                                 <span class="text-danger" asp-validation-for="ProdutoViewModel.Id"></span>
                             </div>
-
                             <div class="form-floating">
                                 <input id="iptNome" type="text" class="form-control" asp-for="ProdutoViewModel.Nome" placeholder="Nome" required>
                                 <label for="iptNome">Nome</label>
@@ -80,9 +79,7 @@
                             <label for="iptImagemUrl">Imagem URL</label>
                             <span class="text-danger" asp-validation-for="ProdutoViewModel.ImagemUrl"></span>
                         </div>
-
-                        <div class="hr-sect">ESPECIFICAÇÃO</div>
-
+                        <hr class="my-4">
                         <div class="row">
                             <div class="col-4 mb-3">
                                 <div class="form-floating">
@@ -93,7 +90,7 @@
                             </div>
                             <div class="col-4 mb-3">
                                 <div class="form-floating">
-                                    <select id="sltPaisOrigem" class="form-select" asp-for="ProdutoViewModel.PaisOrigem">
+                                    <select id="sltPaisOrigem" class="form-select" asp-for="PaisOrigem">
                                         @foreach (var pais in Enum.GetValues(typeof(Pais)).Cast<Pais>())
                                         {
                                             if (Model.ProdutoViewModel.PaisOrigem == pais)
@@ -111,7 +108,7 @@
                             </div>
                             <div class="col-4 mb-3">
                                 <div class="form-floating">
-                                    <select id="sltCategoria" class="form-select" asp-for="ProdutoViewModel.Categoria">
+                                    <select id="sltCategoria" class="form-select" asp-for="Categoria">
                                         @foreach (var categoria in Enum.GetValues(typeof(Categoria)).Cast<Categoria>())
                                         {
                                             if (categoria != Categoria.Todas)
@@ -161,9 +158,7 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="hr-sect">AUDITORIA</div>
-
+                        <hr class="my-4">
                         <div class="row mb-3">
                             <div class="col-8">
                                 <div class="form-floating mb-3">

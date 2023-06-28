@@ -27,7 +27,7 @@ namespace ArteConexao.Pages.User
         public Guid CarrinhoId { get; set; }
 
         [BindProperty]
-        public MeioPagamento MeioPagamento { get; set; }
+        public string MeioPagamento { get; set; }
 
         [BindProperty]
         public string Nome { get; set; }
@@ -147,7 +147,9 @@ namespace ArteConexao.Pages.User
 
         private void ValidateOnPost()
         {
-            if (MeioPagamento != MeioPagamento.Pix && MeioPagamento != MeioPagamento.Cartao)
+            var meioPagamento = Enum.GetValues(typeof(MeioPagamento)).Cast<MeioPagamento>().FirstOrDefault(v => v.ObterDescricao() == MeioPagamento);
+
+            if (meioPagamento != Enums.MeioPagamento.Pix && meioPagamento != Enums.MeioPagamento.Cartao)
             {
                 throw new Exception("O campo meio de pagamento é obrigatório.");
             }

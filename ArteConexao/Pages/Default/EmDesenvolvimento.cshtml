@@ -1,0 +1,39 @@
+﻿@page
+
+@model ArteConexao.Pages.Default.EmDesenvolvimentoModel
+
+@{
+    ViewData["Title"] = "Em desenvolvimento";
+}
+
+<body>
+    <!-- Header início -->
+    <div class="container-fluid page-header wow fadeIn" data-wow-delay="0.1s">
+        <div class="container">
+            <h1 class="display-3 mb-3 animated slideInDown">Em desenvolvimento</h1>
+            <nav aria-label="breadcrumb animated slideInDown">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Pages</a></li>
+                    <li class="breadcrumb-item"><a class="text-body" href="#">Default</a></li>
+                    <li class="breadcrumb-item text-dark active" aria-current="page">Em desenvolvimento</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <!-- Header fim -->
+    <!-- Mensagem finalização início -->
+    <div class="container-xxl py-6 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <i class="bi bi-cone-striped display-1 text-primary"></i>
+                    <h1 class="display-1">Essa página</h1>
+                    <h1 class="mb-4">se encontra em desenvolvimento :)</h1>
+                    <a class="btn btn-primary rounded-pill py-3 px-5" role="button" href="/Default/Catalogo/1">Ver catálogo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Mensagem finalização fim -->
+</body>

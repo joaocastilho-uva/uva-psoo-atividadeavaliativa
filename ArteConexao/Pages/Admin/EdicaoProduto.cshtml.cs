@@ -20,6 +20,12 @@ namespace ArteConexao.Pages.Admin
         [BindProperty]
         public Guid StandId { get; set; }
 
+        [BindProperty]
+        public string Categoria { get; set; }
+
+        [BindProperty]
+        public string PaisOrigem { get; set; }
+
         public EdicaoProdutoModel(IProdutoRepository produtoRepository,
             UserManager<IdentityUser> userManager)
         {
@@ -43,7 +49,7 @@ namespace ArteConexao.Pages.Admin
                     PaisOrigem = produto.PaisOrigem,
                     ValorAtual = produto.ValorAtual,
                     StandId = produto.StandId,
-                    QuantidadeTotal = produto.QuantidadeTotal,
+                    QuantidadeDisponivel = produto.QuantidadeDisponivel,
                     Comprimento = produto.Comprimento,
                     Largura = produto.Largura,
                     Altura = produto.Altura,
@@ -71,8 +77,8 @@ namespace ArteConexao.Pages.Admin
                         Nome = ProdutoViewModel.Nome,
                         Descricao = ProdutoViewModel.Descricao,
                         ImagemUrl = ProdutoViewModel.ImagemUrl,
-                        PaisOrigem = ProdutoViewModel.PaisOrigem,
-                        Categoria = ProdutoViewModel.Categoria,
+                        PaisOrigem = Enum.GetValues(typeof(Pais)).Cast<Pais>().FirstOrDefault(v => v.ObterDescricao() == PaisOrigem),
+                        Categoria = Enum.GetValues(typeof(Categoria)).Cast<Categoria>().FirstOrDefault(v => v.ObterDescricao() == Categoria),
                         Comprimento = ProdutoViewModel.Comprimento,
                         Largura = ProdutoViewModel.Largura,
                         Altura = ProdutoViewModel.Altura,
@@ -87,6 +93,10 @@ namespace ArteConexao.Pages.Admin
                     SetTempData(TipoNotificacao.Sucesso, "Produto atualizado com sucesso.");
 
                     return Redirect($"/Admin/GerenciamentoProduto/{ProdutoViewModel.StandId}");
+                }
+                else
+                {
+                    SetViewData(TipoNotificacao.Erro, $"Não foi possível cadastrar o produto: <br />{string.Join("<br />", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage))}");
                 }
 
                 return Page();

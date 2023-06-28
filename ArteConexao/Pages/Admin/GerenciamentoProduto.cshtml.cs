@@ -61,7 +61,7 @@ namespace ArteConexao.Pages.Admin
                 {
                     var stand = await standRepository.GetAsync(StandId);
 
-                    SetViewData(TipoNotificacao.Sucesso, "Produto excluído com sucesso.");
+                    SetTempData(TipoNotificacao.Sucesso, "Produto excluído com sucesso.");
                 }
 
                 return Redirect($"/Admin/GerenciamentoProduto/{StandId}");

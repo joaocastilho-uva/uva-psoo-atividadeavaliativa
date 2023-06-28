@@ -58,9 +58,10 @@
                                                             @for (var i = 0; i < Model.ItensCarrinhoViewModel.Count(); i++)
                                                             {
                                                                 <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].Id" asp-for="ItensCarrinhoViewModel[i].Id">
+                                                                <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].Nome" asp-for="ItensCarrinhoViewModel[i].Nome">
                                                                 <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].ProdutoId" asp-for="ItensCarrinhoViewModel[i].ProdutoId">
                                                                 <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].StandId" asp-for="ItensCarrinhoViewModel[i].StandId">
-                                                                <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].ValorReserva" asp-for="ItensCarrinhoViewModel[i].ValorReserva">
+                                                                <input id="hdnValorReserva" type="hidden" value="@Model.ItensCarrinhoViewModel[i].ValorReserva" asp-for="ItensCarrinhoViewModel[i].ValorReserva">
                                                                 <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].ValorTotal" asp-for="ItensCarrinhoViewModel[i].ValorTotal">
                                                                 <input type="hidden" value="@Model.ItensCarrinhoViewModel[i].ImagemUrl" asp-for="ItensCarrinhoViewModel[i].ImagemUrl">
                                                                 <input type="hidden" value="@Model.CarrinhoId" asp-for="CarrinhoId">
@@ -73,9 +74,20 @@
                                                                         <h6 class="text-muted">Item @indice</h6>
                                                                         <h6 class="text-black mb-0">@Model.ItensCarrinhoViewModel[i].Nome</h6>
                                                                     </div>
-                                                                    <div class="form-floating col-md-3 col-lg-3 col-xl-3">
-                                                                        <input type="number" id="iptQuantidade" class="form-control input-number" asp-for="ItensCarrinhoViewModel[i].Quantidade" min="1" required>
-                                                                        <label for="iptQuantidade">Quantidade</label>
+                                                                    <div class="col-md-3 col-lg-3 col-xl-3">
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-btn">
+                                                                                <button type="button" class="quantity-left-minus btn btn-danger btn-number" data-type="minus" data-field="">
+                                                                                    <span class="fa fa-minus"></span>
+                                                                                </button>
+                                                                            </span>
+                                                                            <input type="number" id="iptQuantidade" asp-for="ItensCarrinhoViewModel[i].Quantidade" class="form-control input-number" min="1" required>
+                                                                            <span class="input-group-btn">
+                                                                                <button type="button" class="quantity-right-plus btn btn-success btn-number" data-type="plus" data-field="">
+                                                                                    <span class="fa fa-plus"></span>
+                                                                                </button>
+                                                                            </span>
+                                                                        </div>
                                                                     </div>
                                                                     <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
                                                                         <h6 id="valorReserva" class="mb-0">R$ @(Model.ItensCarrinhoViewModel[i].ValorReserva)</h6>
@@ -159,6 +171,9 @@
                 var quantity = parseInt($('#iptQuantidade').val());
 
                 $('#iptQuantidade').val(quantity + 1);
+
+                var total = parseInt($('#hdnValorReserva').val()) * parseInt($('#iptQuantidade').val());
+                $("#valorTotal").text('R$ ' + total.toFixed(2))
             });
 
             $('.quantity-left-minus').click(function (e) {
@@ -168,6 +183,9 @@
                 if (quantity > 0) {
                     $('#iptQuantidade').val(quantity - 1);
                 }
+
+                var total = parseInt($('#hdnValorReserva').val()) * parseInt($('#iptQuantidade').val());
+                $("#valorTotal").text('R$ ' + total.toFixed(2))
             });
         });
     </script>

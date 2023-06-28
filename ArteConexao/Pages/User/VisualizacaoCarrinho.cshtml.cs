@@ -29,6 +29,9 @@ namespace ArteConexao.Pages.User
         [BindProperty]
         public MeioPagamento MeioPagamento { get; set; }
 
+        [BindProperty]
+        public string Nome { get; set; }
+
         public VisualizacaoCarrinhoModel(ICarrinhoRepository carrinhoRepository,
             IItemCarrinhoRepository itemCarrinhoRepository,
             IProdutoRepository produtoRepository,
@@ -120,7 +123,8 @@ namespace ArteConexao.Pages.User
                                 ProdutoId = itemCarrinhoViewModel.ProdutoId,
                                 Quantidade = itemCarrinhoViewModel.Quantidade,
                                 Status = StatusItemReserva.Processada,
-                                ValorReserva = itemCarrinhoViewModel.ValorReserva
+                                ValorReserva = itemCarrinhoViewModel.ValorReserva,
+                                ValorTotal = (itemCarrinhoViewModel.ValorReserva * itemCarrinhoViewModel.Quantidade)
                             };
 
                             reserva.ItensReserva.Add(itemReserva);
@@ -128,7 +132,7 @@ namespace ArteConexao.Pages.User
 
                         await reservaRepository.UpdateAsync(reserva);
                         await carrinhoRepository.DeleteAsync(CarrinhoId);
-                        return RedirectToPage("/User/FinalizacaoReserva");
+                        return Redirect($"/User/FinalizacaoReserva/{reserva.Id}");
                     }
                 }
 
@@ -143,7 +147,7 @@ namespace ArteConexao.Pages.User
 
         private void ValidateOnPost()
         {
-            if (MeioPagamento != MeioPagamento.Pix || MeioPagamento != MeioPagamento.Cartao)
+            if (MeioPagamento != MeioPagamento.Pix && MeioPagamento != MeioPagamento.Cartao)
             {
                 throw new Exception("O campo meio de pagamento é obrigatório.");
             }

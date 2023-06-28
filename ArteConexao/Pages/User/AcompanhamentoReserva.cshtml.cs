@@ -43,11 +43,12 @@ namespace ArteConexao.Pages.User
                         ItensReservaViewModel.Add(new ItemReservaViewModel()
                         {
                             Id = itemReserva.Id,
-                            Quantidade = itemReserva.Quantidade,
-                            Status = itemReserva.Status,
-                            ValorReserva = itemReserva.ValorReserva,
+                            Nome = produtoDb.Nome,
                             ProdutoId = itemReserva.ProdutoId,
-                            Nome = produtoDb.Nome
+                            Status = itemReserva.Status,
+                            Quantidade = itemReserva.Quantidade,
+                            ValorReserva = itemReserva.ValorReserva,
+                            ValorTotal = itemReserva.ValorTotal,
                         });
                     }
                 }

@@ -47,12 +47,12 @@ namespace ArteConexao.Pages.Admin
                     ItensReservaViewModel.Add(new ItemReservaViewModel()
                     {
                         Id = itemReserva.Id,
-                        Quantidade = itemReserva.Quantidade,
-                        Status = itemReserva.Status,
-                        ValorReserva = itemReserva.ValorReserva,
-                        ProdutoId = itemReserva.ProdutoId,
                         Nome = produtoDb.Nome,
-                        ValorTotal = (itemReserva.Quantidade * itemReserva.ValorReserva)
+                        ProdutoId = itemReserva.ProdutoId,
+                        Status = itemReserva.Status,
+                        Quantidade = itemReserva.Quantidade,
+                        ValorReserva = itemReserva.ValorReserva,
+                        ValorTotal = itemReserva.ValorTotal
                     });
                 }
             }
@@ -71,10 +71,14 @@ namespace ArteConexao.Pages.Admin
                         itemReservaDb.Status = StatusItemReserva.Confirmada;
                         SetTempData(TipoNotificacao.Sucesso, "Item de reserva confirmado com sucesso.");
                     }
-                    else
+                    else if(itemReservaDb.Status == StatusItemReserva.Confirmada)
                     {
                         itemReservaDb.Status = StatusItemReserva.Finalizada;
                         SetTempData(TipoNotificacao.Sucesso, "Item de reserva finalizado com sucesso.");
+                    }
+                    else
+                    {
+                        SetTempData(TipoNotificacao.Informativa, "Item de reserva já finalizado.");
                     }
 
                     await itemReservaRepository.UpdateAsync(itemReservaDb);

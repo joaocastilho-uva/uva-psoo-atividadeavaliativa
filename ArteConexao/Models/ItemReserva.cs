@@ -11,5 +11,6 @@ namespace ArteConexao.Models
         public StatusItemReserva Status { get; set; }
         public int Quantidade { get; set; }
         public decimal ValorReserva { get; set; }
+        public decimal ValorTotal { get; set; }
     }
 }
